@@ -110,7 +110,9 @@ class KeyManager:
         file_path = os.path.join(directory , filename)
         try :
             with open(file_path , "wb") as key_file :
-                key_file.write(b"\n".join([key , salt]))
+                # key_file.write(b"\n".join([key , salt]))
+                # Use a clear separator that won't be in base64 encoded data
+                key_file.write(key + b"||SALT||" + salt)  # Changed separator
             print(f"Key saved successfully at: {file_path}")
         except Exception as E :
             print(f"An error occurred while saving the key: {E}")
@@ -148,8 +150,8 @@ class FileEncryptor:
 
         # Create output directory
         output_dir = os.path.join(os.path.dirname(source_directory), f"{os.path.basename(source_directory)}_{operation}")
-        print(f"Creating output directory: {output_dir}")  # Debug print
         os.makedirs(output_dir, exist_ok=True)
+        print(f"Creating output directory ,Files will be saved to: {output_dir}")  # Debug print
 
         for file_name in selected_files:
             source_path = os.path.join(source_directory, file_name)
@@ -158,7 +160,16 @@ class FileEncryptor:
             print(f"\nProcessing file: {file_name}")  # Debug print
             print(f"Source path: {source_path}")  # Debug print
             print(f"Destination path: {dest_path}")  # Debug print
-
+            if operation == "encrypt":
+                dest_path = os.path.join(output_dir, f"{file_name}.encrypted")
+            else:  # decrypt
+            # Remove .encrypted extension if present
+                base_name = file_name
+                if file_name.endswith(".encrypted"):
+                    base_name = file_name[:-10]  # Remove .encrypted
+                    dest_path = os.path.join(output_dir, base_name)
+        
+            print(f"\nProcessing file: {file_name}")
             try:
                 with open(source_path, "rb") as file:
                     file_data = file.read()
@@ -207,15 +218,17 @@ class DecryptionHandler:
         """
         try:
             with open(key_path, 'rb') as key_file:
-                content = key_file.read().split(b'\n')
-                if len(content) != 2:
-                    raise ValueError("Invalid key file format")
-                return content[0], content[1]  # key, salt
+                # content = key_file.read().split(b'\n')
+                content  = key_file.read()
+                parts = content.split(b'||SALT|')
+                if len(parts) != 2:
+                    raise ValueError(f"Invalid key file format Got {len(parts)} parts instead of 2")
+                return parts[0], parts[1]  # key, salt
         except Exception as e:
             print(f"Error loading key file: {e}")
             raise
 
-    def initialize_decryption(self, key_path: str) -> bool:
+    def initialize_decryption(self, key_path: str , password : Optional[str] = None) -> bool:
         """
         Initialize the decryption system using a saved key file.
         
@@ -226,8 +239,15 @@ class DecryptionHandler:
             bool: True if initialization was successful
         """
         try:
-            key, _ = self.load_key_from_file(key_path)
-            self.fernet = Fernet(key)
+            key, salt= self.load_key_from_file(key_path)
+            if not password :
+                self.fernet = Fernet(key)
+            else : 
+                # Re-derive the key using salt and password
+                    key_manager = KeyManager()
+                    derived_key = key_manager.derive_from_key(salt, password)
+                    encoded_key = base64.urlsafe_b64encode(derived_key)
+                    self.fernet = Fernet(encoded_key)
             return True
         except Exception as e:
             print(f"Failed to initialize decryption: {e}")
@@ -311,72 +331,188 @@ class DecryptionHandler:
 
         return success
 
+# def main():
+#     try:
+#         dir_manager = GettingValidDirectory()
+#         encryptor = FileEncryptor()
+#         decryptor = DecryptionHandler()
+
+#         operation = dir_manager.get_user_input(
+#             "Would you like to encrypt or decrypt files? (encrypt/decrypt): ",
+#             dir_manager.validate_response
+#         )
+#         print(f"Selected operation: {operation}")  # Debug print
+
+#         if operation == "encrypt" :
+#             password = getpass("Enter your encryption password: ")
+#             print(f"Received password of length: {len(password)}")  # Debug print
+
+#             key_storage = input("Enter directory to store the encryption key (press Enter to skip saving): ").strip()
+#             if key_storage:
+#                 print(f"Will store key in: {key_storage}")  # Debug print
+
+#             encryptor.initialize_encryption(password, key_storage if key_storage else None)
+
+#             while True:
+#                 source_dir = dir_manager.get_valid_source_directory()
+#                 if source_dir:
+#                     break
+#                 print("Please try again with a valid directory.")
+
+#             files = dir_manager.get_files_in_directory_path(source_dir)
+#             if not files:
+#                 print("No files to process. Exiting.")
+#                 return
+
+#             selected_indices = dir_manager.get_valid_file_indices(len(files))
+#             selected_files = [files[i] for i in selected_indices]
+#             print(f"Files to process: {selected_files}")  # Debug print
+
+#             encryptor.process_files(source_dir, selected_files, operation)
+#         elif operation == "decrypt" :
+#              # Get path to key file
+#             key_path = input("Enter the path to your key file: ").strip()
+            
+#             # Initialize decryption with the key
+#             if not decryptor.initialize_decryption(key_path):
+#                 print("Failed to initialize decryption. Exiting.")
+#                 return
+
+#             # Get input path (file or directory)
+#             input_path = input("Enter the path to the encrypted file or directory: ").strip()
+            
+#             if os.path.isfile(input_path):
+#                 # Decrypt single file
+#                 decryptor.decrypt_file(input_path)
+#             elif os.path.isdir(input_path):
+#                 # Decrypt entire directory
+#                 decryptor.decrypt_directory(input_path)
+#             else:
+#                 print("Invalid path provided.")
+#         else :
+#             print("Program Stoping")
+#     except Exception as e:
+#         print(f"An error occurred in main: {str(e)}")
+#         import traceback
+#         print(traceback.format_exc())  # Print full error traceback
+
+# if __name__ == "__main__":
+#     main()
 
 
 def main():
     try:
         dir_manager = GettingValidDirectory()
         encryptor = FileEncryptor()
-        decryptor = DecryptionHandler()
-
+        
         operation = dir_manager.get_user_input(
             "Would you like to encrypt or decrypt files? (encrypt/decrypt): ",
             dir_manager.validate_response
         )
-        print(f"Selected operation: {operation}")  # Debug print
-
-        if operation == "encrypt" :
+        
+        if operation == "encrypt":
+            # Handle encryption
             password = getpass("Enter your encryption password: ")
-            print(f"Received password of length: {len(password)}")  # Debug print
-
-            key_storage = input("Enter directory to store the encryption key (press Enter to skip saving): ").strip()
-            if key_storage:
-                print(f"Will store key in: {key_storage}")  # Debug print
-
-            encryptor.initialize_encryption(password, key_storage if key_storage else None)
-
+            if not password:
+                print("Password cannot be empty. Exiting.")
+                return
+                
+            # Get key storage information
+            key_storage = input("Enter directory to store the encryption key: ").strip()
+            if not key_storage:
+                print("Key storage path is required. Exiting.")
+                return
+                
+            key_filename = input("Enter key filename (default: key.key): ").strip() or "key.key"
+            
+            # Initialize encryption
+            try:
+                encryptor.initialize_encryption(password, key_storage)
+            except Exception as e:
+                print(f"Failed to initialize encryption: {e}")
+                return
+                
+            # Get source directory
             while True:
                 source_dir = dir_manager.get_valid_source_directory()
                 if source_dir:
                     break
-                print("Please try again with a valid directory.")
-
+                retry = input("Try again with another directory? (yes/no): ").strip().lower()
+                if retry != "yes":
+                    print("Operation cancelled.")
+                    return
+            
+            # Get files to process
             files = dir_manager.get_files_in_directory_path(source_dir)
             if not files:
                 print("No files to process. Exiting.")
                 return
-
+                
             selected_indices = dir_manager.get_valid_file_indices(len(files))
             selected_files = [files[i] for i in selected_indices]
-            print(f"Files to process: {selected_files}")  # Debug print
-
-            encryptor.process_files(source_dir, selected_files, operation)
-        elif operation == "decrypt" :
-             # Get path to key file
-            key_path = input("Enter the path to your key file: ").strip()
             
-            # Initialize decryption with the key
-            if not decryptor.initialize_decryption(key_path):
+            # Process files
+            encryptor.process_files(source_dir, selected_files, operation)
+            
+            # Save key
+            encryptor.Key_Manager.save_key_to_file(key=encryptor.fernet._key, 
+                                                 salt=encryptor.Key_Manager.generate_salt_for_key(), 
+                                                 directory=key_storage,
+                                                 filename=key_filename)
+            
+        elif operation == "decrypt":
+            # Handle decryption
+            decryptor = DecryptionHandler()
+            
+            # Get key file path
+            key_path = input("Enter the path to your key file: ").strip()
+            if not os.path.exists(key_path):
+                print(f"Key file not found: {key_path}")
+                return
+                
+            # Ask for password if needed
+            use_password = dir_manager.get_user_input(
+                "Do you have a password for this key? (yes/no): ",
+                {"yes", "no"}
+            )
+            
+            password = None
+            if use_password == "yes":
+                password = getpass("Enter your decryption password: ")
+            
+            # Initialize decryption
+            if not decryptor.initialize_decryption(key_path, password):
                 print("Failed to initialize decryption. Exiting.")
                 return
-
-            # Get input path (file or directory)
-            input_path = input("Enter the path to the encrypted file or directory: ").strip()
             
-            if os.path.isfile(input_path):
-                # Decrypt single file
-                decryptor.decrypt_file(input_path)
-            elif os.path.isdir(input_path):
-                # Decrypt entire directory
-                decryptor.decrypt_directory(input_path)
-            else:
-                print("Invalid path provided.")
-        else :
-            print("Program Stoping")
+            # Get file or directory to decrypt
+            while True:
+                path = input("Enter the path to the encrypted file or directory: ").strip()
+                if os.path.exists(path):
+                    break
+                print(f"Path does not exist: {path}")
+                retry = input("Try again? (yes/no): ").strip().lower()
+                if retry != "yes":
+                    print("Operation cancelled.")
+                    return
+            
+            # Process decryption
+            if os.path.isfile(path):
+                output_path = input("Enter output path for decrypted file (or press Enter for default): ").strip()
+                decryptor.decrypt_file(path, output_path)
+            elif os.path.isdir(path):
+                output_dir = input("Enter output directory for decrypted files (or press Enter for default): ").strip()
+                decryptor.decrypt_directory(path, output_dir)
+        
+        print("Operation completed.")
+        
+    except KeyboardInterrupt:
+        print("\nOperation cancelled by user.")
     except Exception as e:
-        print(f"An error occurred in main: {str(e)}")
+        print(f"An error occurred: {str(e)}")
         import traceback
-        print(traceback.format_exc())  # Print full error traceback
+        print(traceback.format_exc())
+
 
 if __name__ == "__main__":
-    main()
+     main()
