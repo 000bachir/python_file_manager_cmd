@@ -6,126 +6,13 @@ from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 from typing import Optional, List, Tuple
 
+from utils import Getting_valid_directory , Key_Manager
 
-
-class GettingValidDirectory:
-    def __init__(self) -> None:
-        self.validate_response = {"encrypt", "decrypt"}
-
-    def get_user_input(self, prompt: str, validate_options: Optional[set[str]] = None) -> str:
-        while True:
-            response = input(prompt).strip().lower()
-            if validate_options is None or response in validate_options:
-                return response
-            print(f"Please enter one of the following options: {', '.join(validate_options)}")
-    
-    def get_valid_source_directory(self) -> Optional[str]:
-        directory_path = input("Please enter the directory where the files are located: ")
-        directory_path = os.path.abspath(directory_path)  # Convert to absolute path
-        print(f"Checking directory: {directory_path}")
-        
-        if not os.path.exists(directory_path):
-            print(f"Error: The directory path provided is wrong: {directory_path}")
-            return None
-        if not os.path.isdir(directory_path):
-            print("Error: The path is not a valid directory")
-            return None
-        return directory_path
-
-    def get_files_in_directory_path(self, directory_path: str) -> List[str]:
-        try:
-            files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
-            if not files:
-                print("Error: There are no files in this directory")
-                return []
-            print("\nFiles in folder:")
-            for index, file in enumerate(files, 1):
-                print(f"{index}. {file}")
-            return files
-        except Exception as e:
-            print(f"Error accessing directory: {e}")
-            return []
-    
-    def get_valid_file_indices(self, max_index: int) -> List[int]:
-        while True:
-            indices_input = input("\nEnter the file numbers to process (comma-separated, e.g., 1,3): ")
-            try:
-                indices = [
-                    int(i.strip()) - 1 for i in indices_input.split(",")
-                    if i.strip().isdigit()
-                ]
-                print(f"Selected indices: {indices}")  # Debug print
-                
-                invalid_indices = [
-                    i + 1 for i in indices
-                    if i < 0 or i >= max_index
-                ]
-                if invalid_indices:
-                    print(f"Invalid selection(s): {invalid_indices}. Please try again.")
-                    continue
-                return indices
-            except ValueError:
-                print("Invalid input. Please enter valid numbers.")
-
-class KeyManager:
-    def generate_salt_for_key(self, size: int = 16) -> bytes:
-        salt = secrets.token_bytes(size)
-        print(f"Generated salt of size: {len(salt)} bytes")  # Debug print
-        return salt
-    
-    def derive_from_key(self, salt: bytes, password: str) -> bytes:
-        print(f"Deriving key from password of length: {len(password)}")  # Debug print
-        kdf = Scrypt(
-            salt=salt,
-            length=32,
-            n=2**14,
-            r=8,
-            p=1
-        )
-        key = kdf.derive(password.encode())
-        print(f"Derived key of length: {len(key)} bytes")  # Debug print
-        return key
-
-    def generate_key(self, password: str, salt_size: int = 16) -> Tuple[bytes, bytes]:
-        if not password:
-            raise ValueError("Password cannot be empty")
-        if salt_size < 16:
-            raise ValueError("Salt size must be at least 16 bytes.")
-        
-        salt = self.generate_salt_for_key(salt_size)
-        derived_key = self.derive_from_key(salt, password)
-        encoded_key = base64.urlsafe_b64encode(derived_key)
-        print(f"Generated base64 encoded key of length: {len(encoded_key)} bytes")  # Debug print
-        return encoded_key, salt
-    
-    def save_key_to_file(self, key: bytes, salt: bytes, directory: str, filename: str = "key.key") -> None:
-        if not os.path.exists(directory):
-            generated_directory = input(f"The directory '{directory}' does not exist. Do you want to create it? (yes/no): ").strip().lower()
-            if generated_directory == "yes":
-                os.makedirs(directory)
-                print(f"Directory '{directory}' created successfully.")
-            else:
-                print("Operation cancelled. Key not saved")
-                return
-        
-        # Create the directory if it doesn't exist
-        os.makedirs(directory, exist_ok=True)
-
-        # Make sure we're writing to a file, not a directory
-        file_path = os.path.join(directory, filename)
-        
-        try:
-            with open(file_path, "wb") as key_file:
-                # Use a clear separator that won't be in base64 encoded data
-                key_file.write(key + b"||SALT||" + salt)  # Fixed separator
-            print(f"Key saved successfully at: {file_path}")
-        except Exception as e:
-            print(f"An error occurred while saving the key: {e}")
 
 class FileEncryptor:
     def __init__(self) -> None:
-        self.Get_Valid_Directory = GettingValidDirectory()
-        self.Key_Manager = KeyManager()
+        self.Get_Valid_Directory = Getting_valid_directory()
+        self.Key_Manager = Key_Manager()
         self.fernet = None
 
     def initialize_encryption(self, password: str, key_storage_path: Optional[str] = None) -> None:
@@ -252,7 +139,7 @@ class DecryptionHandler:
                 self.fernet = Fernet(key)
             else: 
                 # Re-derive the key using salt and password
-                key_manager = KeyManager()
+                key_manager = Key_Manager()
                 derived_key = key_manager.derive_from_key(salt, password)
                 encoded_key = base64.urlsafe_b64encode(derived_key)
                 self.fernet = Fernet(encoded_key)
@@ -351,7 +238,7 @@ class DecryptionHandler:
 
 def main():
     try:
-        dir_manager = GettingValidDirectory()
+        dir_manager = Getting_valid_directory()
         encryptor = FileEncryptor()
         
         operation = dir_manager.get_user_input(

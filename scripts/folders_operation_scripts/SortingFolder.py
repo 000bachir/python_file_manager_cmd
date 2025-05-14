@@ -25,7 +25,7 @@ file_types = {
 }
 
 # Function to organize files
-def organize_files(directory):
+def Organize_files(directory):
     # Get the list of all files in the directory
     for file_name in os.listdir(directory):
         # Get the full path of the file

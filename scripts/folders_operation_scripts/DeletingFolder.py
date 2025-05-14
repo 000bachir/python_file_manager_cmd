@@ -1,10 +1,11 @@
 """  deleting a single or multiple folders with naming them and for the multiple they have to be seperated by commas  """
-
 #! need to add removing  tree of directory with shutils : my guess is thet i check for the folder what is inside and then asking the user if he want to remove them 
 
 
 import os
 import shutil
+from utils import Getting_valid_directory
+
 
 def delete_single_folder(path, folder_name):
     full_path = os.path.join(path, folder_name)
@@ -35,10 +36,6 @@ def delete_multiple_folders(path, folder_list):
                 print(f'Access denied: You do not have permission to delete "{full_path}".')
             except Exception as e:
                 print(f'An error occurred while deleting "{folder}": {e}')
-
-
-
-
 
 def get_user_input(prompt):
     return input(prompt).strip().lower()
