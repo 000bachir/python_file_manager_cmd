@@ -3,7 +3,9 @@ from pathlib import Path
 from typing import Optional , List 
 import re
 import shutil
-
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+from utils.Getting_valid_directory import GettingValidDirectory
 
 
 patterns = [

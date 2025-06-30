@@ -1,12 +1,16 @@
 import os
-import secrets
 import base64
 from getpass import getpass
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 from typing import Optional, List, Tuple
+import sys
+from pathlib import Path
 
-from utils import Getting_valid_directory , Key_Manager
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+from utils.Getting_valid_directory import GettingValidDirectory 
+from utils.Key_Manager import KeyManager
 
 
 class FileEncryptor:
@@ -139,7 +143,7 @@ class DecryptionHandler:
                 self.fernet = Fernet(key)
             else: 
                 # Re-derive the key using salt and password
-                key_manager = Key_Manager()
+                key_manager = KeyManager()
                 derived_key = key_manager.derive_from_key(salt, password)
                 encoded_key = base64.urlsafe_b64encode(derived_key)
                 self.fernet = Fernet(encoded_key)
@@ -238,7 +242,7 @@ class DecryptionHandler:
 
 def main():
     try:
-        dir_manager = Getting_valid_directory()
+        dir_manager = GettingValidDirectory()
         encryptor = FileEncryptor()
         
         operation = dir_manager.get_user_input(

@@ -1,7 +1,13 @@
 import os 
 import shutil
 from typing import Optional , List
-import re
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+from utils.Getting_valid_directory import GettingValidDirectory
+
+
 #!--- this scripts only copy what is inside of a directory into another directory ---
 class CopyingDirectories : 
     def __init__(self) -> None:
