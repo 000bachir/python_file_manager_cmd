@@ -1,11 +1,14 @@
+
+
+#! just a reminder that there is a library called PyMuPDF that perform various actions on a pdf file 
+
+
 from docx2pdf import convert
 import os 
 from typing import Optional, List 
 from pathlib import Path
 import zipfile
 import sys
-
-
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from utils.Getting_valid_directory import GettingValidDirectory
 
@@ -22,7 +25,7 @@ class ConvertingFiles:
 
     @staticmethod
     def is_valid_docx_file(filepath: str) -> bool:
-        filepath = filepath.strip()
+        filepath = filepath.strip().lower()
 
         if not filepath.lower().endswith(".docx"):
             print(f"Not a .docx file: {filepath}")
