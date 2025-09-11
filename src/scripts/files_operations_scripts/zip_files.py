@@ -1,3 +1,8 @@
+
+# gather qll of the files into a zip file 
+
+
+
 import os 
 from typing import Optional , List
 import zipfile
