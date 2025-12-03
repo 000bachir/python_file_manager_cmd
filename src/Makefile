@@ -1,6 +1,5 @@
-# Run the main Python script
-start :
-	python -B src/main.py
+run :
+	python -m app
 
 
 # Clean up cache files

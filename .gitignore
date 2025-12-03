@@ -1,11 +1,2 @@
-fails
-project/
-test.py
-testing.py
-
-main.py
-
-
-
-
-what_i_need_to_add.txt
+.venv 
+.gitignore
