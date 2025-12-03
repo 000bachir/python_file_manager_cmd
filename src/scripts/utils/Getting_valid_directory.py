@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Any, Optional, List, Union
 from pathlib import Path
 import logging
 #! class for getting a valid directory
@@ -15,7 +15,9 @@ class GettingValidDirectory:
         self.logger = logging.getLogger(__name__)
         self.logger.info("valid directory helped is good to go \n")
 
-    def get_user_prompt(self, prompt: str, validate_options: List[str]) -> str:
+    def get_user_prompt(
+        self, prompt: str, *validate_options: List[Union[str, Any]]
+    ) -> str:
         while True:
             response = input(prompt).strip().lower()
             if response in validate_options:
@@ -83,4 +85,3 @@ class GettingValidDirectory:
                 return indices
             except ValueError:
                 self.logger.error("Invalid input. Please enter valid numbers\n")
-
