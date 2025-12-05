@@ -16,15 +16,19 @@ class GettingValidDirectory:
         self.logger.info("valid directory helped is good to go \n")
 
     def get_user_prompt(
-        self, prompt: str, *validate_options: List[Union[str, Any]]
+        self, prompt: str, validate_options: Union[List[str], Any] = None
     ) -> str:
-        while True:
-            response = input(prompt).strip().lower()
-            if response in validate_options:
-                return response
-            self.logger.info(
-                f"Please enter one of the following options: {', '.join(validate_options)}\n"
-            )
+        try:
+            while True:
+                response = input(prompt).strip().lower()
+                if response in validate_options:
+                    return response
+                self.logger.info(
+                    f"Please enter one of the following options: {', '.join(validate_options)}\n"
+                )
+        except Exception as e:
+            self.logger.error(f"error getting the user prompt : {e}")
+            raise
 
     def get_valid_directory(self) -> Optional[str]:
         try:

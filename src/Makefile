@@ -1,5 +1,5 @@
 run :
-	python -m app
+	python -m main
 
 
 # Clean up cache files
