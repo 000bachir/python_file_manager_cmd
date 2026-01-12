@@ -1,6 +1,4 @@
 #! just a reminder that there is a library called PyMuPDF that perform various actions on a pdf file
-
-
 from docx2pdf import convert
 import os
 from typing import Optional, List
@@ -96,37 +94,6 @@ class ConvertingDocxToPdf:
 in a nutshell what this class is going to do is it is gonna to extract the text form a docx file
 save into a plain text file 
 """
-
-
-class ConvertDocxToTXT:
-    def __init__(self, enable_loggin: bool = True) -> None:
-        if enable_loggin:
-            logging.basicConfig(
-                level=logging.INFO,
-                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            )
-        self.logger = logging.getLogger(__name__)
-        self.logger.info("\t\t\t\tCONVERT TO TEXT CLASS IS READY TO GO\n")
-
-    def is_valid_docx_file(self, filepath: str) -> bool:
-        try:
-            filepath = filepath.strip().lower()
-            if not filepath.lower().endswith(".docx"):
-                self.logger.warning(f"Not a .docx file: {filepath}\n")
-                return False
-            if not os.path.isfile(filepath):
-                self.logger.warning(f"File does not exist: {filepath}\n")
-                return False
-            with zipfile.ZipFile(filepath, "r") as z:
-                return "[Content_Types].xml" in z.namelist()
-        except Exception as e:
-            self.logger.error(
-                f"Invalid DOCX structure or corrupted file: {filepath} Error: {e}\n"
-            )
-            raise
-
-    def extracting_text_from_docx_file(self, inital_file: str, output_file):
-        Check_extension = self.is_valid_docx_file(inital_file)
 
 
 # def main():
