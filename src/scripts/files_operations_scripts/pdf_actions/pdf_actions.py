@@ -8,7 +8,7 @@ from pathlib import Path
 
 class UserActions:
     def __init__(self) -> None:
-        self.validate_response = ["create", "delete"]
+        self.validate_response = ["create", "split"]
 
 
 class pdfActions:
@@ -33,6 +33,7 @@ class pdfActions:
             raise
 
     def spliting_single_pages(self, filename: str):
+        filename = "./testing.pdf"
         try:
             path_file_to_pdf = Path(filename)
             if not path_file_to_pdf.exists():
@@ -40,6 +41,22 @@ class pdfActions:
                 return False
             intended_pdf = pymupdf.open(path_file_to_pdf)
             empty_output_pdf_file = pymupdf.open()
+            for spage in intended_pdf:
+                r = spage.rect
+                d = pymupdf.Rect(spage.cropbox_position, spage.cropbox_position)
+
+                r1 = r / 2
+                r2 = r1 + (r1.width, 0, r1.width, 0)
+                r3 = r1 + (0, r1.height, 0, r1.height)
+                r4 = pymupdf.Rect(r1.br, r.br)
+                rect_list = [r1, r2, r3, r4]
+
+                for rx in rect_list:
+                    rx += d
+                    page = empty_output_pdf_file.new_page(
+                        -1, width=rx.width, height=rx.height
+                    )
+                    page.show_pdf_page(page.rect, intended_pdf, spage.number, clip=rx)
 
         except Exception as e:
             self.logger.error(
