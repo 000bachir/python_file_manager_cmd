@@ -2,8 +2,6 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 import pymupdf
-from src.scripts.utils.Getting_valid_directory import GettingValidDirectory
-from pathlib import Path
 
 
 class UserActions:
@@ -24,7 +22,7 @@ class pdfActions:
     def create_blank_pdf_page(self, filename: str):
         try:
             docs = pymupdf.open()
-            new_page = docs.new_page(1, height=842, width=595)
+            new_page = docs.new_page(0, height=842, width=595)
             docs.save(filename)
         except Exception as e:
             self.logger.error(
