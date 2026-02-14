@@ -3,13 +3,35 @@ import logging
 from pathlib import Path
 import pymupdf
 
+"""
+1️⃣ PDFEditor
+
+Handles operations that modify existing PDFs
+
+Examples:
+
+split === done
+
+merge
+
+rotate
+
+reorder
+
+watermark
+
+redact
+
+optimize
+"""
+
 
 class UserActions:
     def __init__(self) -> None:
         self.validate_response = ["create", "split"]
 
 
-class pdfActions:
+class pdfEditor:
     def __init__(self, enable_loggin: bool = True) -> None:
         if enable_loggin:
             logging.basicConfig(
@@ -19,27 +41,18 @@ class pdfActions:
             self.logger = logging.getLogger(__name__)
             self.logger.info("pdfActions class is has started \n")
 
-    def create_blank_pdf_page(self, filename: str):
-        try:
-            docs = pymupdf.open()
-            new_page = docs.new_page(0, height=842, width=595)
-            docs.save(filename)
-        except Exception as e:
-            self.logger.error(
-                f"the create_blank_pdf_page has crashed please see error {e}\n"
-            )
-            raise
-
     def spliting_single_pages(self, filename: str):
-        filename = "./testing.pdf"
+        if not filename:
+            self.logger.warning("warning no pdf file has been provided\n")
+            return False
         try:
             path_file_to_pdf = Path(filename)
             if not path_file_to_pdf.exists():
                 self.logger.error("file not found\n")
                 return False
-            intended_pdf = pymupdf.open(path_file_to_pdf)
+            pdf_document = pymupdf.open(path_file_to_pdf)
             empty_output_pdf_file = pymupdf.open()
-            for spage in intended_pdf:
+            for spage in pdf_document:
                 r = spage.rect
                 d = pymupdf.Rect(spage.cropbox_position, spage.cropbox_position)
 
@@ -54,7 +67,7 @@ class pdfActions:
                     page = empty_output_pdf_file.new_page(
                         -1, width=rx.width, height=rx.height
                     )
-                    page.show_pdf_page(page.rect, intended_pdf, spage.number, clip=rx)
+                    page.show_pdf_page(page.rect, pdf_document, spage.number, clip=rx)
 
         except Exception as e:
             self.logger.error(

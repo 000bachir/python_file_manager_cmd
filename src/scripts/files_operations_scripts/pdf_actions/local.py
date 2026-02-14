@@ -1,27 +1,36 @@
-import os
-import pymupdf
-from pathlib import Path
-import time
-from datetime import date
-
-
-def pdf_parse_date_time(pdf_date_time: str):
-    if not pdf_date_time:
-        return
-    try:
-        return pymupdf.utils.get_pdf_date(pdf_date_time)
-    except Exception as e:
-        print(f"errro : {e}")
+import pymupdf as pdf
+from datetime import date, datetime, timezone
+from pprint import pprint, pformat
+import json
 
 
 def extract_metadata():
-    doc = pymupdf.open("./عقد تمهين سريدي محمد بشير.pdf")
-    if doc.metadata is not None:
-        creationDate = doc.metadata.get("creationDate")
-        i_have_no_idea = date(int(creationDate))
-        print(f"the creation date is : {creationDate}")
-        print(type(creationDate))
-        print(i_have_no_idea)
+    document = "./عقد تمهين سريدي محمد بشير.pdf"
+    try:
+        pdf_document = pdf.open(document)
+        if not pdf_document:
+            print("ERROR : no pdf document was provided\n")
+            return False
+        if pdf_document is not None:
+            meta = pdf_document.metadata
+            if meta is not None:
+                meta = meta.copy()
+            else:
+                meta = {}
+            meta["title"] = meta.get("title") or "unknown title"
+            meta["author"] = meta.get("author") or "unknown author"
+            meta["subject"] = meta.get("subject") or "unknown subject"
+            meta["keywords"] = meta.get("keywords") or "tag1, tag2"
+            meta["producer"] = meta.get("producer") or "PDFium"
+            # format the date if not found
+            now_utc = datetime.now(timezone.utc).strftime("D:%Y%m%d%H%M%SZ")
+            meta["creationDate"] = f"({now_utc})" or meta.get("creationDate")
+
+            meta["modDate"] = meta.get("modDate") or "no info"
+            pdf_document.set_metadata(meta)
+            print(json.dumps(pdf_document.metadata, indent=4))
+    except Exception as e:
+        print(f"error {e}")
 
 
 extract_metadata()
