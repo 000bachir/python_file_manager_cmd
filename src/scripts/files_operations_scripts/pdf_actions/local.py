@@ -1,17 +1,29 @@
-import pymupdf as pdf
-from datetime import date, datetime, timezone
-from pprint import pprint, pformat
-import json
 from tqdm import tqdm
+import signal
+import sys
+import time
+
+shutdown_request: bool = False
 
 
-def test_func():
-    doc = pdf.open("./testing_file.pdf")
-    for page in tqdm(doc, desc="converting to svg", unit="page"):
-        svg_content = page.get_svg_image()
-        with open(f"page_{page.number}.svg", "w", encoding="utf-8") as f:
-            f.write(svg_content)
-    doc.close()
+def graceful_shutdown(signum, fname):
+    global shutdown_request
+    print(f"\nReceived signal {signum} , initating graceful shutdown\n")
+    shutdown_request = True
 
 
-test_func()
+signal.signal(signal.SIGTERM, graceful_shutdown)
+signal.signal(signal.SIGINT, graceful_shutdown)
+
+
+def main():
+    print("app started\n")
+    while not shutdown_request:
+        print("active...")
+        time.sleep(1)
+    print("graceful shutdown complete")
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

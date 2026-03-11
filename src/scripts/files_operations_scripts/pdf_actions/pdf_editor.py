@@ -1,7 +1,13 @@
 from __future__ import annotations
 import logging
 from pathlib import Path
+import signal
+import sys
+import time
 import pymupdf
+from typing import List
+from src.scripts.files_operations_scripts.organize_files import FolderNavigation
+from utils.pdf_utils_function.valid_pdf import valid_pdf
 
 """
 1️⃣ PDFEditor
@@ -26,6 +32,9 @@ optimize
 """
 
 
+shutdown_request: bool = False
+
+
 class UserActions:
     def __init__(self) -> None:
         self.validate_response = ["create", "split"]
@@ -40,6 +49,49 @@ class pdfEditor:
             )
             self.logger = logging.getLogger(__name__)
             self.logger.info("pdfActions class is has started \n")
+        else:
+            self.logger = logging.getLogger(__name__)
+            self.logger.disabled = True
+
+        self.name = "PDF EDITOR"
+
+        signal.signal(
+            signal.SIGTERM, lambda signum, frame: self._handle_shutdown(signum, frame)
+        )
+        signal.signal(
+            signal.SIGINT, lambda signum, frame: self._handle_shutdown(signum, frame)
+        )
+
+    def _handle_shutdown(self, signum, frame):
+        global shutdown_request
+        shutdown_request = True
+        self.logger.warning(
+            f"\n[{self.name}] Shutdown signal received (signal {signum}). Cleaning up..."
+        )
+
+    def _cleanup(self):
+        self.logger.info(f"[{self.name}] Releasing resources...")
+        time.sleep(1)  # Simulate cleanup work
+        print(f"[{self.name}] Resources released.")
+
+    def start(self):
+        global shutdown_request
+        self.running = True
+        print(f"[{self.name}] Started. Press Ctrl+C to stop.\n")
+        try:
+            while self.running and not shutdown_request:
+                print(
+                    f"[{self.name}] Working... (shutdown_requested={shutdown_request})"
+                )
+                time.sleep(2)
+        except Exception as e:
+            self.logger.error(f"ERROR could not start the graceful shutdown : {e}")
+            raise
+        finally:
+            # finally block guarantees cleanup runs even on unexpected exits
+            self._cleanup()
+            print(f"[{self.name}] Shutdown complete.")
+            sys.exit(0)
 
     def spliting_single_pages(self, filename: str):
         if not filename:
@@ -74,3 +126,28 @@ class pdfEditor:
                 f"the spliting_single_pages function has crashed please check error : {e}\n"
             )
             raise
+
+
+def main():
+    print("Welcome user!!!\n")
+    dir_manager = FolderNavigation()
+    pdf_editor = pdfEditor()
+
+    while True:
+        actions = dir_manager.get_user_prompt(
+            """
+                Enter one of the following operation you want to procced with
+                Merge\n 
+                Re-arrange\n 
+                Split\n 
+                Rotate\n 
+                Watermark\n 
+                Redact\n 
+                optimize\n
+                or quit if you wanna exit 
+            """,
+            dir_manager.validate_response,
+        )
+        if actions == "quit":
+            print("THANK YOU for using our prodect\n")
+            break
