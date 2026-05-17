@@ -10,3 +10,5 @@ distination = r"~/Desktop/programming/python"
 os.symlink(source, distination, target_is_directory=True)
 
 print("link is created")
+
+print("hello world")
