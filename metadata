@@ -1,0 +1,3690 @@
+Help on package pypdf:
+
+NAME
+    pypdf
+
+DESCRIPTION
+    pypdf is a free and open-source pure-python PDF library capable of splitting,
+    merging, cropping, and transforming the pages of PDF files. It can also add
+    custom data, viewing options, and passwords to PDF files. pypdf can retrieve
+    text and metadata from PDFs as well.
+
+    You can read the full docs at https://pypdf.readthedocs.io/.
+
+PACKAGE CONTENTS
+    _cmap
+    _codecs (package)
+    _crypt_providers (package)
+    _doc_common
+    _encryption
+    _font
+    _page
+    _page_labels
+    _protocols
+    _reader
+    _text_extraction (package)
+    _utils
+    _version
+    _writer
+    annotations (package)
+    constants
+    errors
+    filters
+    generic (package)
+    pagerange
+    papersizes
+    types
+    xmp
+
+CLASSES
+    builtins.object
+        pypdf._page.Transformation
+        pypdf.pagerange.PageRange
+        pypdf.papersizes.PaperSize
+    enum.IntEnum(builtins.int, enum.ReprEnum)
+        pypdf._encryption.PasswordType
+    enum.IntFlag(builtins.int, enum.ReprEnum, enum.Flag)
+        pypdf._writer.ObjectDeletionFlag
+        pypdf.constants.ImageType
+    pypdf._doc_common.PdfDocCommon(abc.ABC)
+        pypdf._reader.PdfReader
+        pypdf._writer.PdfWriter
+    pypdf.generic._data_structures.DictionaryObject(builtins.dict, pypdf.generic._base.PdfObject)
+        pypdf._doc_common.DocumentInformation
+        pypdf._page.PageObject
+
+    class DocumentInformation(pypdf.generic._data_structures.DictionaryObject)
+     |  DocumentInformation() -> None
+     |
+     |  A class representing the basic document metadata provided in a PDF File.
+     |  This class is accessible through
+     |  :py:class:`PdfReader.metadata<pypdf.PdfReader.metadata>`.
+     |
+     |  All text properties of the document metadata have
+     |  *two* properties, e.g. author and author_raw. The non-raw property will
+     |  always return a ``TextStringObject``, making it ideal for a case where the
+     |  metadata is being displayed. The raw property can sometimes return a
+     |  ``ByteStringObject``, if pypdf was unable to decode the string's text
+     |  encoding; this requires additional safety in the caller and therefore is not
+     |  as commonly accessed.
+     |
+     |  Method resolution order:
+     |      DocumentInformation
+     |      pypdf.generic._data_structures.DictionaryObject
+     |      builtins.dict
+     |      pypdf.generic._base.PdfObject
+     |      pypdf._protocols.PdfObjectProtocol
+     |      typing.Protocol
+     |      typing.Generic
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __init__(self) -> None
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  ----------------------------------------------------------------------
+     |  Class methods defined here:
+     |
+     |  __subclasshook__ = _proto_hook(other) from typing
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties defined here:
+     |
+     |  author
+     |      Read-only property accessing the document's author.
+     |
+     |      Returns a ``TextStringObject`` or ``None`` if the author is not
+     |      specified.
+     |
+     |  author_raw
+     |      The "raw" version of author; can return a ``ByteStringObject``.
+     |
+     |  creation_date
+     |      Read-only property accessing the document's creation date.
+     |
+     |  creation_date_raw
+     |      The "raw" version of creation date; can return a ``ByteStringObject``.
+     |
+     |      Typically in the format ``D:YYYYMMDDhhmmss[+Z-]hh'mm`` where the suffix
+     |      is the offset from UTC.
+     |
+     |  creator
+     |      Read-only property accessing the document's creator.
+     |
+     |      If the document was converted to PDF from another format, this is the
+     |      name of the application (e.g. OpenOffice) that created the original
+     |      document from which it was converted. Returns a ``TextStringObject`` or
+     |      ``None`` if the creator is not specified.
+     |
+     |  creator_raw
+     |      The "raw" version of creator; can return a ``ByteStringObject``.
+     |
+     |  keywords
+     |      Read-only property accessing the document's keywords.
+     |
+     |      Returns a ``TextStringObject`` or ``None`` if keywords are not
+     |      specified.
+     |
+     |  keywords_raw
+     |      The "raw" version of keywords; can return a ``ByteStringObject``.
+     |
+     |  modification_date
+     |      Read-only property accessing the document's modification date.
+     |
+     |      The date and time the document was most recently modified.
+     |
+     |  modification_date_raw
+     |      The "raw" version of modification date; can return a
+     |      ``ByteStringObject``.
+     |
+     |      Typically in the format ``D:YYYYMMDDhhmmss[+Z-]hh'mm`` where the suffix
+     |      is the offset from UTC.
+     |
+     |  producer
+     |      Read-only property accessing the document's producer.
+     |
+     |      If the document was converted to PDF from another format, this is the
+     |      name of the application (for example, macOS Quartz) that converted it to
+     |      PDF. Returns a ``TextStringObject`` or ``None`` if the producer is not
+     |      specified.
+     |
+     |  producer_raw
+     |      The "raw" version of producer; can return a ``ByteStringObject``.
+     |
+     |  subject
+     |      Read-only property accessing the document's subject.
+     |
+     |      Returns a ``TextStringObject`` or ``None`` if the subject is not
+     |      specified.
+     |
+     |  subject_raw
+     |      The "raw" version of subject; can return a ``ByteStringObject``.
+     |
+     |  title
+     |      Read-only property accessing the document's title.
+     |
+     |      Returns a ``TextStringObject`` or ``None`` if the title is not
+     |      specified.
+     |
+     |  title_raw
+     |      The "raw" version of title; can return a ``ByteStringObject``.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |
+     |  __abstractmethods__ = frozenset()
+     |
+     |  __parameters__ = ()
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from pypdf.generic._data_structures.DictionaryObject:
+     |
+     |  __getitem__(self, key: Any) -> PdfObject
+     |      Return self[key].
+     |
+     |  __setitem__(self, key: Any, value: Any) -> Any
+     |      Set self[key] to value.
+     |
+     |  clone(
+     |      self,
+     |      pdf_dest: PdfWriterProtocol,
+     |      force_duplicate: bool = False,
+     |      ignore_fields: Optional[Sequence[Union[str, int]]] = ()
+     |  ) -> DictionaryObject
+     |      Clone object into pdf_dest.
+     |
+     |  get_inherited(self, key: str, default: Any = None) -> Any
+     |      Returns the value of a key or from the parent if not found.
+     |      If not found returns default.
+     |
+     |      Args:
+     |          key: string identifying the field to return
+     |
+     |          default: default value to return
+     |
+     |      Returns:
+     |          Current key or inherited one, otherwise default value.
+     |
+     |  hash_bin(self) -> int
+     |      Used to detect modified object.
+     |
+     |      Returns:
+     |          Hash considering type and value.
+     |
+     |  raw_get(self, key: Any) -> Any
+     |
+     |  replicate(self, pdf_dest: PdfWriterProtocol) -> DictionaryObject
+     |      Clone object into pdf_dest (PdfWriterProtocol which is an interface for PdfWriter)
+     |      without ensuring links. This is used in clone_document_from_root with incremental = True.
+     |
+     |      Args:
+     |        pdf_dest: Target to clone to.
+     |
+     |      Returns:
+     |        The cloned PdfObject
+     |
+     |  setdefault(self, key: Any, value: Optional[Any] = None) -> Any
+     |      Insert key with a value of default if key is not in the dictionary.
+     |
+     |      Return the value for key if key is in the dictionary, else default.
+     |
+     |  write_to_stream(
+     |      self,
+     |      stream: StreamType,
+     |      encryption_key: Union[None, str, bytes] = None
+     |  ) -> None
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from pypdf.generic._data_structures.DictionaryObject:
+     |
+     |  read_from_stream(
+     |      stream: StreamType,
+     |      pdf: Optional[PdfReaderProtocol],
+     |      forced_encoding: Union[None, str, list[str], dict[int, str]] = None
+     |  ) -> DictionaryObject
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties inherited from pypdf.generic._data_structures.DictionaryObject:
+     |
+     |  xmp_metadata
+     |      Retrieve XMP (Extensible Metadata Platform) data relevant to this
+     |      object, if available.
+     |
+     |      See Table 347 — Additional entries in a metadata stream dictionary.
+     |
+     |      Returns:
+     |        Returns a :class:`~pypdf.xmp.XmpInformation` instance
+     |        that can be used to access XMP metadata from the document. Can also
+     |        return None if no metadata was found on the document root.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from pypdf.generic._data_structures.DictionaryObject:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  __weakref__
+     |      list of weak references to the object
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from pypdf.generic._data_structures.DictionaryObject:
+     |
+     |  __orig_bases__ = (dict[typing.Any, typing.Any], <class 'pypdf.generic....
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from builtins.dict:
+     |
+     |  __contains__(self, key, /)
+     |      True if the dictionary has the specified key, else False.
+     |
+     |  __delitem__(self, key, /)
+     |      Delete self[key].
+     |
+     |  __eq__(self, value, /)
+     |      Return self==value.
+     |
+     |  __ge__(self, value, /)
+     |      Return self>=value.
+     |
+     |  __gt__(self, value, /)
+     |      Return self>value.
+     |
+     |  __ior__(self, value, /)
+     |      Return self|=value.
+     |
+     |  __iter__(self, /)
+     |      Implement iter(self).
+     |
+     |  __le__(self, value, /)
+     |      Return self<=value.
+     |
+     |  __len__(self, /)
+     |      Return len(self).
+     |
+     |  __lt__(self, value, /)
+     |      Return self<value.
+     |
+     |  __ne__(self, value, /)
+     |      Return self!=value.
+     |
+     |  __or__(self, value, /)
+     |      Return self|value.
+     |
+     |  __repr__(self, /)
+     |      Return repr(self).
+     |
+     |  __reversed__(self, /)
+     |      Return a reverse iterator over the dict keys.
+     |
+     |  __ror__(self, value, /)
+     |      Return value|self.
+     |
+     |  __sizeof__(self, /)
+     |      Return the size of the dict in memory, in bytes.
+     |
+     |  clear(self, /)
+     |      Remove all items from the dict.
+     |
+     |  copy(self, /)
+     |      Return a shallow copy of the dict.
+     |
+     |  get(self, key, default=None, /)
+     |      Return the value for key if key is in the dictionary, else default.
+     |
+     |  items(self, /)
+     |      Return a set-like object providing a view on the dict's items.
+     |
+     |  keys(self, /)
+     |      Return a set-like object providing a view on the dict's keys.
+     |
+     |  pop(self, key, default=<unrepresentable>, /)
+     |      D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
+     |
+     |      If the key is not found, return the default if given; otherwise,
+     |      raise a KeyError.
+     |
+     |  popitem(self, /)
+     |      Remove and return a (key, value) pair as a 2-tuple.
+     |
+     |      Pairs are returned in LIFO (last-in, first-out) order.
+     |      Raises KeyError if the dict is empty.
+     |
+     |  update(...)
+     |      D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+     |      If E is present and has a .keys() method, then does:  for k in E.keys(): D[k] = E[k]
+     |      If E is present and lacks a .keys() method, then does:  for k, v in E: D[k] = v
+     |      In either case, this is followed by: for k in F:  D[k] = F[k]
+     |
+     |  values(self, /)
+     |      Return an object providing a view on the dict's values.
+     |
+     |  ----------------------------------------------------------------------
+     |  Class methods inherited from builtins.dict:
+     |
+     |  __class_getitem__(object, /)
+     |      See PEP 585
+     |
+     |  fromkeys(iterable, value=None, /)
+     |      Create a new dictionary with keys from iterable and values set to value.
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from builtins.dict:
+     |
+     |  __new__(*args, **kwargs) class method of builtins.dict
+     |      Create and return a new object.  See help(type) for accurate signature.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from builtins.dict:
+     |
+     |  __hash__ = None
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from pypdf.generic._base.PdfObject:
+     |
+     |  get_object(self) -> Optional['PdfObject']
+     |      Resolve indirect references.
+     |
+     |  hash_value(self) -> bytes
+     |
+     |  hash_value_data(self) -> bytes
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from pypdf.generic._base.PdfObject:
+     |
+     |  hash_func = openssl_sha1(data=b'', *, usedforsecurity=True, string=None)
+     |      Returns a sha1 hash object; optionally initialized with a string
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from pypdf._protocols.PdfObjectProtocol:
+     |
+     |  __protocol_attrs__ = {'_reference_clone', 'clone', 'get_object', 'hash...
+     |
+     |  ----------------------------------------------------------------------
+     |  Class methods inherited from typing.Protocol:
+     |
+     |  __init_subclass__(*args, **kwargs)
+     |      This method is called when a class is subclassed.
+     |
+     |      The default implementation does nothing. It may be
+     |      overridden to extend subclasses.
+
+    class ImageType(enum.IntFlag)
+     |  ImageType(*values)
+     |
+     |  Method resolution order:
+     |      ImageType
+     |      enum.IntFlag
+     |      builtins.int
+     |      enum.ReprEnum
+     |      enum.Flag
+     |      enum.Enum
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __and__(self, other) from enum.Flag
+     |
+     |  __format__(self, format_spec, /) from builtins.int
+     |      Convert to a string according to format_spec.
+     |
+     |  __invert__(self) from enum.Flag
+     |
+     |  __new__(cls, value) from enum.Enum
+     |      Create and return a new object.  See help(type) for accurate signature.
+     |
+     |  __or__(self, other) from enum.Flag
+     |      Return self|value.
+     |
+     |  __rand__ = __and__(self, other)
+     |
+     |  __ror__ = __or__(self, other)
+     |
+     |  __rxor__ = __xor__(self, other)
+     |
+     |  __xor__(self, other) from enum.Flag
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |
+     |  DRAWING_IMAGES = <ImageType.DRAWING_IMAGES: 4>
+     |
+     |  INLINE_IMAGES = <ImageType.INLINE_IMAGES: 2>
+     |
+     |  XOBJECT_IMAGES = <ImageType.XOBJECT_IMAGES: 1>
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from enum.IntFlag:
+     |
+     |  __repr__(self) from enum.Flag
+     |      Return repr(self).
+     |
+     |  __str__ = __repr__(self, /) from builtins.int
+     |      Return repr(self).
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from builtins.int:
+     |
+     |  __abs__(self, /)
+     |      abs(self)
+     |
+     |  __add__(self, value, /)
+     |      Return self+value.
+     |
+     |  __bool__(self, /)
+     |      True if self else False
+     |
+     |  __ceil__(self, /)
+     |      Ceiling of an Integral returns itself.
+     |
+     |  __divmod__(self, value, /)
+     |      Return divmod(self, value).
+     |
+     |  __eq__(self, value, /)
+     |      Return self==value.
+     |
+     |  __float__(self, /)
+     |      float(self)
+     |
+     |  __floor__(self, /)
+     |      Flooring an Integral returns itself.
+     |
+     |  __floordiv__(self, value, /)
+     |      Return self//value.
+     |
+     |  __ge__(self, value, /)
+     |      Return self>=value.
+     |
+     |  __getnewargs__(self, /)
+     |
+     |  __gt__(self, value, /)
+     |      Return self>value.
+     |
+     |  __hash__(self, /)
+     |      Return hash(self).
+     |
+     |  __index__(self, /)
+     |      Return self converted to an integer, if self is suitable for use as an index into a list.
+     |
+     |  __int__(self, /)
+     |      int(self)
+     |
+     |  __le__(self, value, /)
+     |      Return self<=value.
+     |
+     |  __lshift__(self, value, /)
+     |      Return self<<value.
+     |
+     |  __lt__(self, value, /)
+     |      Return self<value.
+     |
+     |  __mod__(self, value, /)
+     |      Return self%value.
+     |
+     |  __mul__(self, value, /)
+     |      Return self*value.
+     |
+     |  __ne__(self, value, /)
+     |      Return self!=value.
+     |
+     |  __neg__(self, /)
+     |      -self
+     |
+     |  __pos__(self, /)
+     |      +self
+     |
+     |  __pow__(self, value, mod=None, /)
+     |      Return pow(self, value, mod).
+     |
+     |  __radd__(self, value, /)
+     |      Return value+self.
+     |
+     |  __rdivmod__(self, value, /)
+     |      Return divmod(value, self).
+     |
+     |  __rfloordiv__(self, value, /)
+     |      Return value//self.
+     |
+     |  __rlshift__(self, value, /)
+     |      Return value<<self.
+     |
+     |  __rmod__(self, value, /)
+     |      Return value%self.
+     |
+     |  __rmul__(self, value, /)
+     |      Return value*self.
+     |
+     |  __round__(self, ndigits=None, /)
+     |      Rounding an Integral returns itself.
+     |
+     |      Rounding with an ndigits argument also returns an integer.
+     |
+     |  __rpow__(self, value, mod=None, /)
+     |      Return pow(value, self, mod).
+     |
+     |  __rrshift__(self, value, /)
+     |      Return value>>self.
+     |
+     |  __rshift__(self, value, /)
+     |      Return self>>value.
+     |
+     |  __rsub__(self, value, /)
+     |      Return value-self.
+     |
+     |  __rtruediv__(self, value, /)
+     |      Return value/self.
+     |
+     |  __sizeof__(self, /)
+     |      Returns size in memory, in bytes.
+     |
+     |  __sub__(self, value, /)
+     |      Return self-value.
+     |
+     |  __truediv__(self, value, /)
+     |      Return self/value.
+     |
+     |  __trunc__(self, /)
+     |      Truncating an Integral returns itself.
+     |
+     |  as_integer_ratio(self, /)
+     |      Return a pair of integers, whose ratio is equal to the original int.
+     |
+     |      The ratio is in lowest terms and has a positive denominator.
+     |
+     |      >>> (10).as_integer_ratio()
+     |      (10, 1)
+     |      >>> (-10).as_integer_ratio()
+     |      (-10, 1)
+     |      >>> (0).as_integer_ratio()
+     |      (0, 1)
+     |
+     |  bit_count(self, /)
+     |      Number of ones in the binary representation of the absolute value of self.
+     |
+     |      Also known as the population count.
+     |
+     |      >>> bin(13)
+     |      '0b1101'
+     |      >>> (13).bit_count()
+     |      3
+     |
+     |  bit_length(self, /)
+     |      Number of bits necessary to represent self in binary.
+     |
+     |      >>> bin(37)
+     |      '0b100101'
+     |      >>> (37).bit_length()
+     |      6
+     |
+     |  conjugate(self, /)
+     |      Returns self, the complex conjugate of any int.
+     |
+     |  is_integer(self, /)
+     |      Returns True. Exists for duck type compatibility with float.is_integer.
+     |
+     |  to_bytes(self, /, length=1, byteorder='big', *, signed=False)
+     |      Return an array of bytes representing an integer.
+     |
+     |      length
+     |        Length of bytes object to use.  An OverflowError is raised if the
+     |        integer is not representable with the given number of bytes.  Default
+     |        is length 1.
+     |      byteorder
+     |        The byte order used to represent the integer.  If byteorder is 'big',
+     |        the most significant byte is at the beginning of the byte array.  If
+     |        byteorder is 'little', the most significant byte is at the end of the
+     |        byte array.  To request the native byte order of the host system, use
+     |        sys.byteorder as the byte order value.  Default is to use 'big'.
+     |      signed
+     |        Determines whether two's complement is used to represent the integer.
+     |        If signed is False and a negative integer is given, an OverflowError
+     |        is raised.
+     |
+     |  ----------------------------------------------------------------------
+     |  Class methods inherited from builtins.int:
+     |
+     |  from_bytes(bytes, byteorder='big', *, signed=False)
+     |      Return the integer represented by the given array of bytes.
+     |
+     |      bytes
+     |        Holds the array of bytes to convert.  The argument must either
+     |        support the buffer protocol or be an iterable object producing bytes.
+     |        Bytes and bytearray are examples of built-in objects that support the
+     |        buffer protocol.
+     |      byteorder
+     |        The byte order used to represent the integer.  If byteorder is 'big',
+     |        the most significant byte is at the beginning of the byte array.  If
+     |        byteorder is 'little', the most significant byte is at the end of the
+     |        byte array.  To request the native byte order of the host system, use
+     |        sys.byteorder as the byte order value.  Default is to use 'big'.
+     |      signed
+     |        Indicates whether two's complement is used to represent the integer.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from builtins.int:
+     |
+     |  denominator
+     |      the denominator of a rational number in lowest terms
+     |
+     |  imag
+     |      the imaginary part of a complex number
+     |
+     |  numerator
+     |      the numerator of a rational number in lowest terms
+     |
+     |  real
+     |      the real part of a complex number
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from enum.Flag:
+     |
+     |  __contains__(self, other)
+     |      Returns True if self has at least the same flags set as other.
+     |
+     |  __iter__(self)
+     |      Returns flags in definition order.
+     |
+     |  __len__(self)
+     |      Return the number of members (no aliases)
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from enum.Enum:
+     |
+     |  __dir__(self)
+     |      Returns public methods and other interesting attributes.
+     |
+     |  __reduce_ex__(self, proto)
+     |      Helper for pickle.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from enum.Enum:
+     |
+     |  name
+     |      The name of the Enum member.
+     |
+     |  value
+     |      The value of the Enum member.
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from enum.EnumType:
+     |
+     |  __getitem__(name)
+     |      Return the member matching `name`.
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties inherited from enum.EnumType:
+     |
+     |  __members__
+     |      Returns a mapping of member name->value.
+     |
+     |      This mapping lists all enum members, including aliases. Note that this
+     |      is a read-only view of the internal mapping.
+
+    class ObjectDeletionFlag(enum.IntFlag)
+     |  ObjectDeletionFlag(*values)
+     |
+     |  Method resolution order:
+     |      ObjectDeletionFlag
+     |      enum.IntFlag
+     |      builtins.int
+     |      enum.ReprEnum
+     |      enum.Flag
+     |      enum.Enum
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __and__(self, other) from enum.Flag
+     |
+     |  __format__(self, format_spec, /) from builtins.int
+     |      Convert to a string according to format_spec.
+     |
+     |  __invert__(self) from enum.Flag
+     |
+     |  __new__(cls, value) from enum.Enum
+     |      Create and return a new object.  See help(type) for accurate signature.
+     |
+     |  __or__(self, other) from enum.Flag
+     |      Return self|value.
+     |
+     |  __rand__ = __and__(self, other)
+     |
+     |  __ror__ = __or__(self, other)
+     |
+     |  __rxor__ = __xor__(self, other)
+     |
+     |  __xor__(self, other) from enum.Flag
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |
+     |  ALL_ANNOTATIONS = <ObjectDeletionFlag.ALL_ANNOTATIONS: 16>
+     |
+     |  ATTACHMENTS = <ObjectDeletionFlag.ATTACHMENTS: 4>
+     |
+     |  DRAWING_IMAGES = <ObjectDeletionFlag.DRAWING_IMAGES: 128>
+     |
+     |  INLINE_IMAGES = <ObjectDeletionFlag.INLINE_IMAGES: 64>
+     |
+     |  LINKS = <ObjectDeletionFlag.LINKS: 2>
+     |
+     |  OBJECTS_3D = <ObjectDeletionFlag.OBJECTS_3D: 8>
+     |
+     |  TEXT = <ObjectDeletionFlag.TEXT: 1>
+     |
+     |  XOBJECT_IMAGES = <ObjectDeletionFlag.XOBJECT_IMAGES: 32>
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from enum.IntFlag:
+     |
+     |  __repr__(self) from enum.Flag
+     |      Return repr(self).
+     |
+     |  __str__ = __repr__(self, /) from builtins.int
+     |      Return repr(self).
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from builtins.int:
+     |
+     |  __abs__(self, /)
+     |      abs(self)
+     |
+     |  __add__(self, value, /)
+     |      Return self+value.
+     |
+     |  __bool__(self, /)
+     |      True if self else False
+     |
+     |  __ceil__(self, /)
+     |      Ceiling of an Integral returns itself.
+     |
+     |  __divmod__(self, value, /)
+     |      Return divmod(self, value).
+     |
+     |  __eq__(self, value, /)
+     |      Return self==value.
+     |
+     |  __float__(self, /)
+     |      float(self)
+     |
+     |  __floor__(self, /)
+     |      Flooring an Integral returns itself.
+     |
+     |  __floordiv__(self, value, /)
+     |      Return self//value.
+     |
+     |  __ge__(self, value, /)
+     |      Return self>=value.
+     |
+     |  __getnewargs__(self, /)
+     |
+     |  __gt__(self, value, /)
+     |      Return self>value.
+     |
+     |  __hash__(self, /)
+     |      Return hash(self).
+     |
+     |  __index__(self, /)
+     |      Return self converted to an integer, if self is suitable for use as an index into a list.
+     |
+     |  __int__(self, /)
+     |      int(self)
+     |
+     |  __le__(self, value, /)
+     |      Return self<=value.
+     |
+     |  __lshift__(self, value, /)
+     |      Return self<<value.
+     |
+     |  __lt__(self, value, /)
+     |      Return self<value.
+     |
+     |  __mod__(self, value, /)
+     |      Return self%value.
+     |
+     |  __mul__(self, value, /)
+     |      Return self*value.
+     |
+     |  __ne__(self, value, /)
+     |      Return self!=value.
+     |
+     |  __neg__(self, /)
+     |      -self
+     |
+     |  __pos__(self, /)
+     |      +self
+     |
+     |  __pow__(self, value, mod=None, /)
+     |      Return pow(self, value, mod).
+     |
+     |  __radd__(self, value, /)
+     |      Return value+self.
+     |
+     |  __rdivmod__(self, value, /)
+     |      Return divmod(value, self).
+     |
+     |  __rfloordiv__(self, value, /)
+     |      Return value//self.
+     |
+     |  __rlshift__(self, value, /)
+     |      Return value<<self.
+     |
+     |  __rmod__(self, value, /)
+     |      Return value%self.
+     |
+     |  __rmul__(self, value, /)
+     |      Return value*self.
+     |
+     |  __round__(self, ndigits=None, /)
+     |      Rounding an Integral returns itself.
+     |
+     |      Rounding with an ndigits argument also returns an integer.
+     |
+     |  __rpow__(self, value, mod=None, /)
+     |      Return pow(value, self, mod).
+     |
+     |  __rrshift__(self, value, /)
+     |      Return value>>self.
+     |
+     |  __rshift__(self, value, /)
+     |      Return self>>value.
+     |
+     |  __rsub__(self, value, /)
+     |      Return value-self.
+     |
+     |  __rtruediv__(self, value, /)
+     |      Return value/self.
+     |
+     |  __sizeof__(self, /)
+     |      Returns size in memory, in bytes.
+     |
+     |  __sub__(self, value, /)
+     |      Return self-value.
+     |
+     |  __truediv__(self, value, /)
+     |      Return self/value.
+     |
+     |  __trunc__(self, /)
+     |      Truncating an Integral returns itself.
+     |
+     |  as_integer_ratio(self, /)
+     |      Return a pair of integers, whose ratio is equal to the original int.
+     |
+     |      The ratio is in lowest terms and has a positive denominator.
+     |
+     |      >>> (10).as_integer_ratio()
+     |      (10, 1)
+     |      >>> (-10).as_integer_ratio()
+     |      (-10, 1)
+     |      >>> (0).as_integer_ratio()
+     |      (0, 1)
+     |
+     |  bit_count(self, /)
+     |      Number of ones in the binary representation of the absolute value of self.
+     |
+     |      Also known as the population count.
+     |
+     |      >>> bin(13)
+     |      '0b1101'
+     |      >>> (13).bit_count()
+     |      3
+     |
+     |  bit_length(self, /)
+     |      Number of bits necessary to represent self in binary.
+     |
+     |      >>> bin(37)
+     |      '0b100101'
+     |      >>> (37).bit_length()
+     |      6
+     |
+     |  conjugate(self, /)
+     |      Returns self, the complex conjugate of any int.
+     |
+     |  is_integer(self, /)
+     |      Returns True. Exists for duck type compatibility with float.is_integer.
+     |
+     |  to_bytes(self, /, length=1, byteorder='big', *, signed=False)
+     |      Return an array of bytes representing an integer.
+     |
+     |      length
+     |        Length of bytes object to use.  An OverflowError is raised if the
+     |        integer is not representable with the given number of bytes.  Default
+     |        is length 1.
+     |      byteorder
+     |        The byte order used to represent the integer.  If byteorder is 'big',
+     |        the most significant byte is at the beginning of the byte array.  If
+     |        byteorder is 'little', the most significant byte is at the end of the
+     |        byte array.  To request the native byte order of the host system, use
+     |        sys.byteorder as the byte order value.  Default is to use 'big'.
+     |      signed
+     |        Determines whether two's complement is used to represent the integer.
+     |        If signed is False and a negative integer is given, an OverflowError
+     |        is raised.
+     |
+     |  ----------------------------------------------------------------------
+     |  Class methods inherited from builtins.int:
+     |
+     |  from_bytes(bytes, byteorder='big', *, signed=False)
+     |      Return the integer represented by the given array of bytes.
+     |
+     |      bytes
+     |        Holds the array of bytes to convert.  The argument must either
+     |        support the buffer protocol or be an iterable object producing bytes.
+     |        Bytes and bytearray are examples of built-in objects that support the
+     |        buffer protocol.
+     |      byteorder
+     |        The byte order used to represent the integer.  If byteorder is 'big',
+     |        the most significant byte is at the beginning of the byte array.  If
+     |        byteorder is 'little', the most significant byte is at the end of the
+     |        byte array.  To request the native byte order of the host system, use
+     |        sys.byteorder as the byte order value.  Default is to use 'big'.
+     |      signed
+     |        Indicates whether two's complement is used to represent the integer.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from builtins.int:
+     |
+     |  denominator
+     |      the denominator of a rational number in lowest terms
+     |
+     |  imag
+     |      the imaginary part of a complex number
+     |
+     |  numerator
+     |      the numerator of a rational number in lowest terms
+     |
+     |  real
+     |      the real part of a complex number
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from enum.Flag:
+     |
+     |  __contains__(self, other)
+     |      Returns True if self has at least the same flags set as other.
+     |
+     |  __iter__(self)
+     |      Returns flags in definition order.
+     |
+     |  __len__(self)
+     |      Return the number of members (no aliases)
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from enum.Enum:
+     |
+     |  __dir__(self)
+     |      Returns public methods and other interesting attributes.
+     |
+     |  __reduce_ex__(self, proto)
+     |      Helper for pickle.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from enum.Enum:
+     |
+     |  name
+     |      The name of the Enum member.
+     |
+     |  value
+     |      The value of the Enum member.
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from enum.EnumType:
+     |
+     |  __getitem__(name)
+     |      Return the member matching `name`.
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties inherited from enum.EnumType:
+     |
+     |  __members__
+     |      Returns a mapping of member name->value.
+     |
+     |      This mapping lists all enum members, including aliases. Note that this
+     |      is a read-only view of the internal mapping.
+
+    class PageObject(pypdf.generic._data_structures.DictionaryObject)
+     |  PageObject(
+     |      pdf: Optional[PdfCommonDocProtocol] = None,
+     |      indirect_reference: Optional[IndirectObject] = None
+     |  ) -> None
+     |
+     |  PageObject represents a single page within a PDF file.
+     |
+     |  Typically these objects will be created by accessing the
+     |  :attr:`pages<pypdf.PdfReader.pages>` property of the
+     |  :class:`PdfReader<pypdf.PdfReader>` class, but it is
+     |  also possible to create an empty page with the
+     |  :meth:`create_blank_page()<pypdf._page.PageObject.create_blank_page>` static method.
+     |
+     |  Args:
+     |      pdf: PDF file the page belongs to.
+     |      indirect_reference: Stores the original indirect reference to
+     |          this object in its source PDF
+     |
+     |  Method resolution order:
+     |      PageObject
+     |      pypdf.generic._data_structures.DictionaryObject
+     |      builtins.dict
+     |      pypdf.generic._base.PdfObject
+     |      pypdf._protocols.PdfObjectProtocol
+     |      typing.Protocol
+     |      typing.Generic
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __init__(
+     |      self,
+     |      pdf: Optional[PdfCommonDocProtocol] = None,
+     |      indirect_reference: Optional[IndirectObject] = None
+     |  ) -> None
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  add_transformation(
+     |      self,
+     |      ctm: Union[Transformation, CompressedTransformationMatrix],
+     |      expand: bool = False
+     |  ) -> None
+     |      Apply a transformation matrix to the page.
+     |
+     |      Args:
+     |          ctm: A 6-element tuple containing the operands of the
+     |              transformation matrix. Alternatively, a
+     |              :py:class:`Transformation<pypdf.Transformation>`
+     |              object can be passed.
+     |
+     |      See :doc:`/user/cropping-and-transforming`.
+     |
+     |  compress_content_streams(self, level: int = -1) -> None
+     |      Compress the size of this page by joining all content streams and
+     |      applying a FlateDecode filter.
+     |
+     |      However, it is possible that this function will perform no action if
+     |      content stream compression becomes "automatic".
+     |
+     |  extract_text(
+     |      self,
+     |      *args: Any,
+     |      orientations: Union[int, tuple[int, ...]] = (0, 90, 180, 270),
+     |      space_width: float = 200.0,
+     |      visitor_operand_before: Optional[Callable[[Any, Any, Any, Any], None]] = None,
+     |      visitor_operand_after: Optional[Callable[[Any, Any, Any, Any], None]] = None,
+     |      visitor_text: Optional[Callable[[Any, Any, Any, Any, Any], None]] = None,
+     |      extraction_mode: Literal['plain', 'layout'] = 'plain',
+     |      **kwargs: Any
+     |  ) -> str
+     |      Locate all text drawing commands, in the order they are provided in the
+     |      content stream, and extract the text.
+     |
+     |      This works well for some PDF files, but poorly for others, depending on
+     |      the generator used. This will be refined in the future.
+     |
+     |      Do not rely on the order of text coming out of this function, as it
+     |      will change if this function is made more sophisticated.
+     |
+     |      Arabic and Hebrew are extracted in the correct order.
+     |      If required a custom RTL range of characters can be defined;
+     |      see function set_custom_rtl.
+     |
+     |      Additionally you can provide visitor methods to get informed on all
+     |      operations and all text objects.
+     |      For example in some PDF files this can be useful to parse tables.
+     |
+     |      Args:
+     |          orientations: list of orientations extract_text will look for
+     |              default = (0, 90, 180, 270)
+     |              note: currently only 0 (up),90 (turned left), 180 (upside down),
+     |              270 (turned right)
+     |              Silently ignored in "layout" mode.
+     |          space_width: force default space width
+     |              if not extracted from font (default: 200)
+     |              Silently ignored in "layout" mode.
+     |          visitor_operand_before: function to be called before processing an operation.
+     |              It has four arguments: operator, operand-arguments,
+     |              current transformation matrix and text matrix.
+     |              Ignored with a warning in "layout" mode.
+     |          visitor_operand_after: function to be called after processing an operation.
+     |              It has four arguments: operator, operand-arguments,
+     |              current transformation matrix and text matrix.
+     |              Ignored with a warning in "layout" mode.
+     |          visitor_text: function to be called when extracting some text at some position.
+     |              It has five arguments: text, current transformation matrix,
+     |              text matrix, font-dictionary and font-size.
+     |              The font-dictionary may be None in case of unknown fonts.
+     |              If not None it may e.g. contain key "/BaseFont" with value "/Arial,Bold".
+     |              Ignored with a warning in "layout" mode.
+     |          extraction_mode (Literal["plain", "layout"]): "plain" for legacy functionality,
+     |              "layout" for experimental layout mode functionality.
+     |              NOTE: orientations, space_width, and visitor_* parameters are NOT respected
+     |              in "layout" mode.
+     |
+     |      kwargs:
+     |          layout_mode_space_vertically (bool): include blank lines inferred from
+     |              y distance + font height. Defaults to True.
+     |          layout_mode_scale_weight (float): multiplier for string length when calculating
+     |              weighted average character width. Defaults to 1.25.
+     |          layout_mode_strip_rotated (bool): layout mode does not support rotated text.
+     |              Set to False to include rotated text anyway. If rotated text is discovered,
+     |              layout will be degraded and a warning will result. Defaults to True.
+     |          layout_mode_debug_path (Path | None): if supplied, must target a directory.
+     |              creates the following files with debug information for layout mode
+     |              functions if supplied:
+     |
+     |                - fonts.json: output of self._layout_mode_fonts
+     |                - tjs.json: individual text render ops with corresponding transform matrices
+     |                - bts.json: text render ops left justified and grouped by BT/ET operators
+     |                - bt_groups.json: BT/ET operations grouped by rendered y-coord (aka lines)
+     |          layout_mode_font_height_weight (float): multiplier for font height when calculating
+     |              blank lines. Defaults to 1.
+     |
+     |      Returns:
+     |          The extracted text
+     |
+     |  extract_xform_text(
+     |      self,
+     |      xform: EncodedStreamObject,
+     |      orientations: tuple[int, ...] = (0, 90, 270, 360),
+     |      space_width: float = 200.0,
+     |      visitor_operand_before: Optional[Callable[[Any, Any, Any, Any], None]] = None,
+     |      visitor_operand_after: Optional[Callable[[Any, Any, Any, Any], None]] = None,
+     |      visitor_text: Optional[Callable[[Any, Any, Any, Any, Any], None]] = None,
+     |      *,
+     |      known_ids: Optional[set[int]] = None
+     |  ) -> str
+     |      Extract text from an XObject.
+     |
+     |      Args:
+     |          xform:
+     |          orientations:
+     |          space_width:  force default space width (if not extracted from font (default 200)
+     |          visitor_operand_before:
+     |          visitor_operand_after:
+     |          visitor_text:
+     |
+     |      Returns:
+     |          The extracted text
+     |
+     |  get_contents(self) -> Optional[ContentStream]
+     |      Access the page contents.
+     |
+     |      Returns:
+     |          The ``/Contents`` object, or ``None`` if it does not exist.
+     |          ``/Contents`` is optional, as described in §7.7.3.3 of the PDF Reference.
+     |
+     |  hash_bin(self) -> int
+     |      Used to detect modified object.
+     |
+     |      Note: this function is overloaded to return the same results
+     |      as a DictionaryObject.
+     |
+     |      Returns:
+     |          Hash considering type and value.
+     |
+     |  hash_value_data(self) -> bytes
+     |
+     |  merge_page(self, page2: PageObject, expand: bool = False, over: bool = True) -> None
+     |      Merge the content streams of two pages into one.
+     |
+     |      Resource references (e.g. fonts) are maintained from both pages.
+     |      The mediabox, cropbox, etc of this page are not altered.
+     |      The parameter page's content stream will
+     |      be added to the end of this page's content stream,
+     |      meaning that it will be drawn after, or "on top" of this page.
+     |
+     |      Args:
+     |          page2: The page to be merged into this one. Should be
+     |              an instance of :class:`PageObject<PageObject>`.
+     |          over: set the page2 content over page1 if True (default) else under
+     |          expand: If True, the current page dimensions will be
+     |              expanded to accommodate the dimensions of the page to be merged.
+     |
+     |  merge_rotated_page(
+     |      self,
+     |      page2: PageObject,
+     |      rotation: float,
+     |      over: bool = True,
+     |      expand: bool = False
+     |  ) -> None
+     |      Similar to :meth:`~pypdf._page.PageObject.merge_page`, but the stream to be merged
+     |      is rotated by applying a transformation matrix.
+     |
+     |      Args:
+     |        page2: The page to be merged into this one.
+     |        rotation: The angle of the rotation, in degrees
+     |        over: set the page2 content over page1 if True (default) else under
+     |        expand: Whether the page should be expanded to fit the
+     |          dimensions of the page to be merged.
+     |
+     |  merge_scaled_page(
+     |      self,
+     |      page2: PageObject,
+     |      scale: float,
+     |      over: bool = True,
+     |      expand: bool = False
+     |  ) -> None
+     |      Similar to :meth:`~pypdf._page.PageObject.merge_page`, but the stream to be merged
+     |      is scaled by applying a transformation matrix.
+     |
+     |      Args:
+     |        page2: The page to be merged into this one.
+     |        scale: The scaling factor
+     |        over: set the page2 content over page1 if True (default) else under
+     |        expand: Whether the page should be expanded to fit the
+     |          dimensions of the page to be merged.
+     |
+     |  merge_transformed_page(
+     |      self,
+     |      page2: PageObject,
+     |      ctm: Union[CompressedTransformationMatrix, Transformation],
+     |      over: bool = True,
+     |      expand: bool = False
+     |  ) -> None
+     |      Similar to :meth:`~pypdf._page.PageObject.merge_page`, but a transformation
+     |      matrix is applied to the merged stream.
+     |
+     |      Args:
+     |        page2: The page to be merged into this one.
+     |        ctm: a 6-element tuple containing the operands of the
+     |               transformation matrix
+     |        over: set the page2 content over page1 if True (default) else under
+     |        expand: Whether the page should be expanded to fit the dimensions
+     |          of the page to be merged.
+     |
+     |  merge_translated_page(
+     |      self,
+     |      page2: PageObject,
+     |      tx: float,
+     |      ty: float,
+     |      over: bool = True,
+     |      expand: bool = False
+     |  ) -> None
+     |      Similar to :meth:`~pypdf._page.PageObject.merge_page`, but the stream to be
+     |      merged is translated by applying a transformation matrix.
+     |
+     |      Args:
+     |        page2: the page to be merged into this one.
+     |        tx: The translation on X axis
+     |        ty: The translation on Y axis
+     |        over: set the page2 content over page1 if True (default) else under
+     |        expand: Whether the page should be expanded to fit the
+     |          dimensions of the page to be merged.
+     |
+     |  replace_contents(
+     |      self,
+     |      content: Union[None, ContentStream, EncodedStreamObject, ArrayObject]
+     |  ) -> None
+     |      Replace the page contents with the new content and nullify old objects
+     |      Args:
+     |          content: new content; if None delete the content field.
+     |
+     |  rotate(self, angle: int) -> PageObject
+     |      Rotate a page clockwise by increments of 90 degrees.
+     |
+     |      Args:
+     |          angle: Angle to rotate the page. Must be an increment of 90 deg.
+     |
+     |      Returns:
+     |          The rotated PageObject
+     |
+     |  scale(self, sx: float, sy: float) -> None
+     |      Scale a page by the given factors by applying a transformation matrix
+     |      to its content and updating the page size.
+     |
+     |      This updates the various page boundaries (bleedbox, trimbox, etc.)
+     |      and the contents of the page.
+     |
+     |      Args:
+     |          sx: The scaling factor on horizontal axis.
+     |          sy: The scaling factor on vertical axis.
+     |
+     |  scale_by(self, factor: float) -> None
+     |      Scale a page by the given factor by applying a transformation matrix to
+     |      its content and updating the page size.
+     |
+     |      Args:
+     |          factor: The scaling factor (for both X and Y axis).
+     |
+     |  scale_to(self, width: float, height: float) -> None
+     |      Scale a page to the specified dimensions by applying a transformation
+     |      matrix to its content and updating the page size.
+     |
+     |      Args:
+     |          width: The new width.
+     |          height: The new height.
+     |
+     |  transfer_rotation_to_content(self) -> None
+     |      Apply the rotation of the page to the content and the media/crop/...
+     |      boxes.
+     |
+     |      It is recommended to apply this function before page merging.
+     |
+     |  ----------------------------------------------------------------------
+     |  Class methods defined here:
+     |
+     |  __subclasshook__ = _proto_hook(other) from typing
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods defined here:
+     |
+     |  create_blank_page(
+     |      pdf: Optional[PdfCommonDocProtocol] = None,
+     |      width: Union[float, Decimal, None] = None,
+     |      height: Union[float, Decimal, None] = None
+     |  ) -> PageObject
+     |      Return a new blank page.
+     |
+     |      If ``width`` or ``height`` is ``None``, try to get the page size
+     |      from the last page of *pdf*.
+     |
+     |      Args:
+     |          pdf: PDF file the page is within.
+     |          width: The width of the new page expressed in default user
+     |              space units.
+     |          height: The height of the new page expressed in default user
+     |              space units.
+     |
+     |      Returns:
+     |          The new blank page
+     |
+     |      Raises:
+     |          PageSizeNotDefinedError: if ``pdf`` is ``None`` or contains
+     |              no page
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties defined here:
+     |
+     |  images
+     |      Read-only property emulating a list of images on a page.
+     |
+     |      Get a list of all images on the page. The key can be:
+     |      - A string (for the top object)
+     |      - A tuple (for images within XObject forms)
+     |      - An integer
+     |
+     |      Examples:
+     |          * `reader.pages[0].images[0]`        # return first image
+     |          * `reader.pages[0].images['/I0']`    # return image '/I0'
+     |          * `reader.pages[0].images['/TP1','/Image1']` # return image '/Image1' within '/TP1' XObject form
+     |          * `for img in reader.pages[0].images:` # loops through all objects
+     |
+     |      images.keys() and images.items() can be used.
+     |
+     |      The ImageFile has the following properties:
+     |
+     |          * `.name` : name of the object
+     |          * `.data` : bytes of the object
+     |          * `.image` : PIL Image Object
+     |          * `.indirect_reference` : object reference
+     |
+     |      and the following methods:
+     |          `.replace(new_image: PIL.Image.Image, **kwargs)` :
+     |              replace the image in the pdf with the new image
+     |              applying the saving parameters indicated (such as quality)
+     |
+     |      Example usage:
+     |
+     |          reader.pages[0].images[0].replace(Image.open("new_image.jpg"), quality=20)
+     |
+     |      Inline images are extracted and named ~0~, ~1~, ..., with the
+     |      indirect_reference set to None.
+     |
+     |  page_number
+     |      Read-only property which returns the page number within the PDF file.
+     |
+     |      Returns:
+     |          Page number; None if the page is not attached to a PDF.
+     |
+     |  user_unit
+     |      A read-only positive number giving the size of user space units.
+     |
+     |      It is in multiples of 1/72 inch. Hence a value of 1 means a user
+     |      space unit is 1/72 inch, and a value of 3 means that a user
+     |      space unit is 3/72 inch.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  annotations
+     |
+     |  artbox
+     |
+     |  bleedbox
+     |
+     |  cropbox
+     |
+     |  mediabox
+     |
+     |  rotation
+     |      The visual rotation of the page.
+     |
+     |      This number has to be a multiple of 90 degrees: 0, 90, 180, or 270 are
+     |      valid values. This property does not affect ``/Contents``.
+     |
+     |  trimbox
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |
+     |  __abstractmethods__ = frozenset()
+     |
+     |  __parameters__ = ()
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from pypdf.generic._data_structures.DictionaryObject:
+     |
+     |  __getitem__(self, key: Any) -> PdfObject
+     |      Return self[key].
+     |
+     |  __setitem__(self, key: Any, value: Any) -> Any
+     |      Set self[key] to value.
+     |
+     |  clone(
+     |      self,
+     |      pdf_dest: PdfWriterProtocol,
+     |      force_duplicate: bool = False,
+     |      ignore_fields: Optional[Sequence[Union[str, int]]] = ()
+     |  ) -> DictionaryObject
+     |      Clone object into pdf_dest.
+     |
+     |  get_inherited(self, key: str, default: Any = None) -> Any
+     |      Returns the value of a key or from the parent if not found.
+     |      If not found returns default.
+     |
+     |      Args:
+     |          key: string identifying the field to return
+     |
+     |          default: default value to return
+     |
+     |      Returns:
+     |          Current key or inherited one, otherwise default value.
+     |
+     |  raw_get(self, key: Any) -> Any
+     |
+     |  replicate(self, pdf_dest: PdfWriterProtocol) -> DictionaryObject
+     |      Clone object into pdf_dest (PdfWriterProtocol which is an interface for PdfWriter)
+     |      without ensuring links. This is used in clone_document_from_root with incremental = True.
+     |
+     |      Args:
+     |        pdf_dest: Target to clone to.
+     |
+     |      Returns:
+     |        The cloned PdfObject
+     |
+     |  setdefault(self, key: Any, value: Optional[Any] = None) -> Any
+     |      Insert key with a value of default if key is not in the dictionary.
+     |
+     |      Return the value for key if key is in the dictionary, else default.
+     |
+     |  write_to_stream(
+     |      self,
+     |      stream: StreamType,
+     |      encryption_key: Union[None, str, bytes] = None
+     |  ) -> None
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from pypdf.generic._data_structures.DictionaryObject:
+     |
+     |  read_from_stream(
+     |      stream: StreamType,
+     |      pdf: Optional[PdfReaderProtocol],
+     |      forced_encoding: Union[None, str, list[str], dict[int, str]] = None
+     |  ) -> DictionaryObject
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties inherited from pypdf.generic._data_structures.DictionaryObject:
+     |
+     |  xmp_metadata
+     |      Retrieve XMP (Extensible Metadata Platform) data relevant to this
+     |      object, if available.
+     |
+     |      See Table 347 — Additional entries in a metadata stream dictionary.
+     |
+     |      Returns:
+     |        Returns a :class:`~pypdf.xmp.XmpInformation` instance
+     |        that can be used to access XMP metadata from the document. Can also
+     |        return None if no metadata was found on the document root.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from pypdf.generic._data_structures.DictionaryObject:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  __weakref__
+     |      list of weak references to the object
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from pypdf.generic._data_structures.DictionaryObject:
+     |
+     |  __orig_bases__ = (dict[typing.Any, typing.Any], <class 'pypdf.generic....
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from builtins.dict:
+     |
+     |  __contains__(self, key, /)
+     |      True if the dictionary has the specified key, else False.
+     |
+     |  __delitem__(self, key, /)
+     |      Delete self[key].
+     |
+     |  __eq__(self, value, /)
+     |      Return self==value.
+     |
+     |  __ge__(self, value, /)
+     |      Return self>=value.
+     |
+     |  __gt__(self, value, /)
+     |      Return self>value.
+     |
+     |  __ior__(self, value, /)
+     |      Return self|=value.
+     |
+     |  __iter__(self, /)
+     |      Implement iter(self).
+     |
+     |  __le__(self, value, /)
+     |      Return self<=value.
+     |
+     |  __len__(self, /)
+     |      Return len(self).
+     |
+     |  __lt__(self, value, /)
+     |      Return self<value.
+     |
+     |  __ne__(self, value, /)
+     |      Return self!=value.
+     |
+     |  __or__(self, value, /)
+     |      Return self|value.
+     |
+     |  __repr__(self, /)
+     |      Return repr(self).
+     |
+     |  __reversed__(self, /)
+     |      Return a reverse iterator over the dict keys.
+     |
+     |  __ror__(self, value, /)
+     |      Return value|self.
+     |
+     |  __sizeof__(self, /)
+     |      Return the size of the dict in memory, in bytes.
+     |
+     |  clear(self, /)
+     |      Remove all items from the dict.
+     |
+     |  copy(self, /)
+     |      Return a shallow copy of the dict.
+     |
+     |  get(self, key, default=None, /)
+     |      Return the value for key if key is in the dictionary, else default.
+     |
+     |  items(self, /)
+     |      Return a set-like object providing a view on the dict's items.
+     |
+     |  keys(self, /)
+     |      Return a set-like object providing a view on the dict's keys.
+     |
+     |  pop(self, key, default=<unrepresentable>, /)
+     |      D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
+     |
+     |      If the key is not found, return the default if given; otherwise,
+     |      raise a KeyError.
+     |
+     |  popitem(self, /)
+     |      Remove and return a (key, value) pair as a 2-tuple.
+     |
+     |      Pairs are returned in LIFO (last-in, first-out) order.
+     |      Raises KeyError if the dict is empty.
+     |
+     |  update(...)
+     |      D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+     |      If E is present and has a .keys() method, then does:  for k in E.keys(): D[k] = E[k]
+     |      If E is present and lacks a .keys() method, then does:  for k, v in E: D[k] = v
+     |      In either case, this is followed by: for k in F:  D[k] = F[k]
+     |
+     |  values(self, /)
+     |      Return an object providing a view on the dict's values.
+     |
+     |  ----------------------------------------------------------------------
+     |  Class methods inherited from builtins.dict:
+     |
+     |  __class_getitem__(object, /)
+     |      See PEP 585
+     |
+     |  fromkeys(iterable, value=None, /)
+     |      Create a new dictionary with keys from iterable and values set to value.
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from builtins.dict:
+     |
+     |  __new__(*args, **kwargs) class method of builtins.dict
+     |      Create and return a new object.  See help(type) for accurate signature.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from builtins.dict:
+     |
+     |  __hash__ = None
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from pypdf.generic._base.PdfObject:
+     |
+     |  get_object(self) -> Optional['PdfObject']
+     |      Resolve indirect references.
+     |
+     |  hash_value(self) -> bytes
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from pypdf.generic._base.PdfObject:
+     |
+     |  hash_func = openssl_sha1(data=b'', *, usedforsecurity=True, string=None)
+     |      Returns a sha1 hash object; optionally initialized with a string
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from pypdf._protocols.PdfObjectProtocol:
+     |
+     |  __protocol_attrs__ = {'_reference_clone', 'clone', 'get_object', 'hash...
+     |
+     |  ----------------------------------------------------------------------
+     |  Class methods inherited from typing.Protocol:
+     |
+     |  __init_subclass__(*args, **kwargs)
+     |      This method is called when a class is subclassed.
+     |
+     |      The default implementation does nothing. It may be
+     |      overridden to extend subclasses.
+
+    class PageRange(builtins.object)
+     |  PageRange(arg: Union[slice, 'PageRange', str]) -> None
+     |
+     |  A slice-like representation of a range of page indices.
+     |
+     |  For example, page numbers, only starting at zero.
+     |
+     |  The syntax is like what you would put between brackets [ ].
+     |  The slice is one of the few Python types that can't be subclassed,
+     |  but this class converts to and from slices, and allows similar use.
+     |
+     |    -  PageRange(str) parses a string representing a page range.
+     |    -  PageRange(slice) directly "imports" a slice.
+     |    -  to_slice() gives the equivalent slice.
+     |    -  str() and repr() allow printing.
+     |    -  indices(n) is like slice.indices(n).
+     |
+     |  Methods defined here:
+     |
+     |  __add__(self, other: PageRange) -> PageRange
+     |
+     |  __eq__(self, other: object) -> bool
+     |      Return self==value.
+     |
+     |  __hash__(self) -> int
+     |      Return hash(self).
+     |
+     |  __init__(self, arg: Union[slice, 'PageRange', str]) -> None
+     |      Initialize with either a slice -- giving the equivalent page range,
+     |      or a PageRange object -- making a copy,
+     |      or a string like
+     |          "int", "[int]:[int]" or "[int]:[int]:[int]",
+     |          where the brackets indicate optional ints.
+     |      Remember, page indices start with zero.
+     |      Page range expression examples:
+     |
+     |          :     all pages.                   -1    last page.
+     |          22    just the 23rd page.          :-1   all but the last page.
+     |          0:3   the first three pages.       -2    second-to-last page.
+     |          :3    the first three pages.       -2:   last two pages.
+     |          5:    from the sixth page onward.  -3:-1 third & second to last.
+     |      The third, "stride" or "step" number is also recognized.
+     |          ::2       0 2 4 ... to the end.    3:0:-1    3 2 1 but not 0.
+     |          1:10:2    1 3 5 7 9                2::-1     2 1 0.
+     |          ::-1      all pages in reverse order.
+     |      Note the difference between this notation and arguments to slice():
+     |          slice(3) means the first three pages;
+     |          PageRange("3") means the range of only the fourth page.
+     |          However PageRange(slice(3)) means the first three pages.
+     |
+     |  __repr__(self) -> str
+     |      A string like "PageRange('1:2:3')".
+     |
+     |  __str__(self) -> str
+     |      A string like "1:2:3".
+     |
+     |  indices(self, n: int) -> tuple[int, int, int]
+     |      Assuming a sequence of length n, calculate the start and stop indices,
+     |      and the stride length of the PageRange.
+     |
+     |      See help(slice.indices).
+     |
+     |      Args:
+     |          n:  the length of the list of pages to choose from.
+     |
+     |      Returns:
+     |          Arguments for range().
+     |
+     |  to_slice(self) -> slice
+     |      Return the slice equivalent of this page range.
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods defined here:
+     |
+     |  valid(input: Any) -> bool
+     |      True if input is a valid initializer for a PageRange.
+     |
+     |      Args:
+     |          input: A possible PageRange string or a PageRange object.
+     |
+     |      Returns:
+     |          True, if the ``input`` is a valid PageRange.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  __weakref__
+     |      list of weak references to the object
+
+    class PaperSize(builtins.object)
+     |  (width, height) of the paper in portrait mode in pixels at 72 ppi.
+     |
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  __weakref__
+     |      list of weak references to the object
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |
+     |  A0 = Dimensions(width=2384, height=3370)
+     |
+     |  A1 = Dimensions(width=1684, height=2384)
+     |
+     |  A2 = Dimensions(width=1191, height=1684)
+     |
+     |  A3 = Dimensions(width=842, height=1191)
+     |
+     |  A4 = Dimensions(width=595, height=842)
+     |
+     |  A5 = Dimensions(width=420, height=595)
+     |
+     |  A6 = Dimensions(width=298, height=420)
+     |
+     |  A7 = Dimensions(width=210, height=298)
+     |
+     |  A8 = Dimensions(width=147, height=210)
+     |
+     |  C4 = Dimensions(width=649, height=918)
+
+    class PasswordType(enum.IntEnum)
+     |  PasswordType(*values)
+     |
+     |  Method resolution order:
+     |      PasswordType
+     |      enum.IntEnum
+     |      builtins.int
+     |      enum.ReprEnum
+     |      enum.Enum
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __format__(self, format_spec, /) from builtins.int
+     |      Convert to a string according to format_spec.
+     |
+     |  __new__(cls, value) from enum.Enum
+     |      Create and return a new object.  See help(type) for accurate signature.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |
+     |  NOT_DECRYPTED = <PasswordType.NOT_DECRYPTED: 0>
+     |
+     |  OWNER_PASSWORD = <PasswordType.OWNER_PASSWORD: 2>
+     |
+     |  USER_PASSWORD = <PasswordType.USER_PASSWORD: 1>
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from enum.IntEnum:
+     |
+     |  __repr__(self) from enum.Enum
+     |      Return repr(self).
+     |
+     |  __str__ = __repr__(self, /) from builtins.int
+     |      Return repr(self).
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from builtins.int:
+     |
+     |  __abs__(self, /)
+     |      abs(self)
+     |
+     |  __add__(self, value, /)
+     |      Return self+value.
+     |
+     |  __and__(self, value, /)
+     |      Return self&value.
+     |
+     |  __bool__(self, /)
+     |      True if self else False
+     |
+     |  __ceil__(self, /)
+     |      Ceiling of an Integral returns itself.
+     |
+     |  __divmod__(self, value, /)
+     |      Return divmod(self, value).
+     |
+     |  __eq__(self, value, /)
+     |      Return self==value.
+     |
+     |  __float__(self, /)
+     |      float(self)
+     |
+     |  __floor__(self, /)
+     |      Flooring an Integral returns itself.
+     |
+     |  __floordiv__(self, value, /)
+     |      Return self//value.
+     |
+     |  __ge__(self, value, /)
+     |      Return self>=value.
+     |
+     |  __getnewargs__(self, /)
+     |
+     |  __gt__(self, value, /)
+     |      Return self>value.
+     |
+     |  __hash__(self, /)
+     |      Return hash(self).
+     |
+     |  __index__(self, /)
+     |      Return self converted to an integer, if self is suitable for use as an index into a list.
+     |
+     |  __int__(self, /)
+     |      int(self)
+     |
+     |  __invert__(self, /)
+     |      ~self
+     |
+     |  __le__(self, value, /)
+     |      Return self<=value.
+     |
+     |  __lshift__(self, value, /)
+     |      Return self<<value.
+     |
+     |  __lt__(self, value, /)
+     |      Return self<value.
+     |
+     |  __mod__(self, value, /)
+     |      Return self%value.
+     |
+     |  __mul__(self, value, /)
+     |      Return self*value.
+     |
+     |  __ne__(self, value, /)
+     |      Return self!=value.
+     |
+     |  __neg__(self, /)
+     |      -self
+     |
+     |  __or__(self, value, /)
+     |      Return self|value.
+     |
+     |  __pos__(self, /)
+     |      +self
+     |
+     |  __pow__(self, value, mod=None, /)
+     |      Return pow(self, value, mod).
+     |
+     |  __radd__(self, value, /)
+     |      Return value+self.
+     |
+     |  __rand__(self, value, /)
+     |      Return value&self.
+     |
+     |  __rdivmod__(self, value, /)
+     |      Return divmod(value, self).
+     |
+     |  __rfloordiv__(self, value, /)
+     |      Return value//self.
+     |
+     |  __rlshift__(self, value, /)
+     |      Return value<<self.
+     |
+     |  __rmod__(self, value, /)
+     |      Return value%self.
+     |
+     |  __rmul__(self, value, /)
+     |      Return value*self.
+     |
+     |  __ror__(self, value, /)
+     |      Return value|self.
+     |
+     |  __round__(self, ndigits=None, /)
+     |      Rounding an Integral returns itself.
+     |
+     |      Rounding with an ndigits argument also returns an integer.
+     |
+     |  __rpow__(self, value, mod=None, /)
+     |      Return pow(value, self, mod).
+     |
+     |  __rrshift__(self, value, /)
+     |      Return value>>self.
+     |
+     |  __rshift__(self, value, /)
+     |      Return self>>value.
+     |
+     |  __rsub__(self, value, /)
+     |      Return value-self.
+     |
+     |  __rtruediv__(self, value, /)
+     |      Return value/self.
+     |
+     |  __rxor__(self, value, /)
+     |      Return value^self.
+     |
+     |  __sizeof__(self, /)
+     |      Returns size in memory, in bytes.
+     |
+     |  __sub__(self, value, /)
+     |      Return self-value.
+     |
+     |  __truediv__(self, value, /)
+     |      Return self/value.
+     |
+     |  __trunc__(self, /)
+     |      Truncating an Integral returns itself.
+     |
+     |  __xor__(self, value, /)
+     |      Return self^value.
+     |
+     |  as_integer_ratio(self, /)
+     |      Return a pair of integers, whose ratio is equal to the original int.
+     |
+     |      The ratio is in lowest terms and has a positive denominator.
+     |
+     |      >>> (10).as_integer_ratio()
+     |      (10, 1)
+     |      >>> (-10).as_integer_ratio()
+     |      (-10, 1)
+     |      >>> (0).as_integer_ratio()
+     |      (0, 1)
+     |
+     |  bit_count(self, /)
+     |      Number of ones in the binary representation of the absolute value of self.
+     |
+     |      Also known as the population count.
+     |
+     |      >>> bin(13)
+     |      '0b1101'
+     |      >>> (13).bit_count()
+     |      3
+     |
+     |  bit_length(self, /)
+     |      Number of bits necessary to represent self in binary.
+     |
+     |      >>> bin(37)
+     |      '0b100101'
+     |      >>> (37).bit_length()
+     |      6
+     |
+     |  conjugate(self, /)
+     |      Returns self, the complex conjugate of any int.
+     |
+     |  is_integer(self, /)
+     |      Returns True. Exists for duck type compatibility with float.is_integer.
+     |
+     |  to_bytes(self, /, length=1, byteorder='big', *, signed=False)
+     |      Return an array of bytes representing an integer.
+     |
+     |      length
+     |        Length of bytes object to use.  An OverflowError is raised if the
+     |        integer is not representable with the given number of bytes.  Default
+     |        is length 1.
+     |      byteorder
+     |        The byte order used to represent the integer.  If byteorder is 'big',
+     |        the most significant byte is at the beginning of the byte array.  If
+     |        byteorder is 'little', the most significant byte is at the end of the
+     |        byte array.  To request the native byte order of the host system, use
+     |        sys.byteorder as the byte order value.  Default is to use 'big'.
+     |      signed
+     |        Determines whether two's complement is used to represent the integer.
+     |        If signed is False and a negative integer is given, an OverflowError
+     |        is raised.
+     |
+     |  ----------------------------------------------------------------------
+     |  Class methods inherited from builtins.int:
+     |
+     |  from_bytes(bytes, byteorder='big', *, signed=False)
+     |      Return the integer represented by the given array of bytes.
+     |
+     |      bytes
+     |        Holds the array of bytes to convert.  The argument must either
+     |        support the buffer protocol or be an iterable object producing bytes.
+     |        Bytes and bytearray are examples of built-in objects that support the
+     |        buffer protocol.
+     |      byteorder
+     |        The byte order used to represent the integer.  If byteorder is 'big',
+     |        the most significant byte is at the beginning of the byte array.  If
+     |        byteorder is 'little', the most significant byte is at the end of the
+     |        byte array.  To request the native byte order of the host system, use
+     |        sys.byteorder as the byte order value.  Default is to use 'big'.
+     |      signed
+     |        Indicates whether two's complement is used to represent the integer.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from builtins.int:
+     |
+     |  denominator
+     |      the denominator of a rational number in lowest terms
+     |
+     |  imag
+     |      the imaginary part of a complex number
+     |
+     |  numerator
+     |      the numerator of a rational number in lowest terms
+     |
+     |  real
+     |      the real part of a complex number
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from enum.Enum:
+     |
+     |  __dir__(self)
+     |      Returns public methods and other interesting attributes.
+     |
+     |  __reduce_ex__(self, proto)
+     |      Helper for pickle.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from enum.Enum:
+     |
+     |  name
+     |      The name of the Enum member.
+     |
+     |  value
+     |      The value of the Enum member.
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from enum.EnumType:
+     |
+     |  __contains__(value)
+     |      Return True if `value` is in `cls`.
+     |
+     |      `value` is in `cls` if:
+     |      1) `value` is a member of `cls`, or
+     |      2) `value` is the value of one of the `cls`'s members.
+     |      3) `value` is a pseudo-member (flags)
+     |
+     |  __getitem__(name)
+     |      Return the member matching `name`.
+     |
+     |  __iter__()
+     |      Return members in definition order.
+     |
+     |  __len__()
+     |      Return the number of members (no aliases)
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties inherited from enum.EnumType:
+     |
+     |  __members__
+     |      Returns a mapping of member name->value.
+     |
+     |      This mapping lists all enum members, including aliases. Note that this
+     |      is a read-only view of the internal mapping.
+
+    class PdfReader(pypdf._doc_common.PdfDocCommon)
+     |  PdfReader(
+     |      stream: Union[StrByteType, Path],
+     |      strict: bool = False,
+     |      password: Union[None, str, bytes] = None,
+     |      *,
+     |      root_object_recovery_limit: Optional[int] = 10000
+     |  ) -> None
+     |
+     |  Initialize a PdfReader object.
+     |
+     |  This operation can take some time, as the PDF stream's cross-reference
+     |  tables are read into memory.
+     |
+     |  Args:
+     |      stream: A File object or an object that supports the standard read
+     |          and seek methods similar to a File object. Could also be a
+     |          string representing a path to a PDF file.
+     |      strict: Determines whether user should be warned of all
+     |          problems and also causes some correctable problems to be fatal.
+     |          Defaults to ``False``.
+     |      password: Decrypt PDF file at initialization. If the
+     |          password is None, the file will not be decrypted.
+     |          Defaults to ``None``.
+     |      root_object_recovery_limit: The maximum number of objects to query
+     |          for recovering the Root object in non-strict mode. To disable
+     |          this security measure, pass ``None``.
+     |
+     |  Method resolution order:
+     |      PdfReader
+     |      pypdf._doc_common.PdfDocCommon
+     |      abc.ABC
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __enter__(self) -> Self
+     |
+     |  __exit__(
+     |      self,
+     |      exc_type: Optional[type[BaseException]],
+     |      exc_val: Optional[BaseException],
+     |      exc_tb: Optional[TracebackType]
+     |  ) -> None
+     |
+     |  __init__(
+     |      self,
+     |      stream: Union[StrByteType, Path],
+     |      strict: bool = False,
+     |      password: Union[None, str, bytes] = None,
+     |      *,
+     |      root_object_recovery_limit: Optional[int] = 10000
+     |  ) -> None
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  add_form_topname(self, name: str) -> Optional[DictionaryObject]
+     |      Add a top level form that groups all form fields below it.
+     |
+     |      Args:
+     |          name: text string of the "/T" Attribute of the created object
+     |
+     |      Returns:
+     |          The created object. ``None`` means no object was created.
+     |
+     |  cache_get_indirect_object(self, generation: int, idnum: int) -> Optional[PdfObject]
+     |
+     |  cache_indirect_object(
+     |      self,
+     |      generation: int,
+     |      idnum: int,
+     |      obj: Optional[PdfObject]
+     |  ) -> Optional[PdfObject]
+     |
+     |  close(self) -> None
+     |      Close the stream if opened in __init__ and clear memory.
+     |
+     |  decrypt(self, password: Union[str, bytes]) -> PasswordType
+     |      When using an encrypted / secured PDF file with the PDF Standard
+     |      encryption handler, this function will allow the file to be decrypted.
+     |      It checks the given password against the document's user password and
+     |      owner password, and then stores the resulting decryption key if either
+     |      password is correct.
+     |
+     |      It does not matter which password was matched. Both passwords provide
+     |      the correct decryption key that will allow the document to be used with
+     |      this library.
+     |
+     |      Args:
+     |          password: The password to match.
+     |
+     |      Returns:
+     |          An indicator if the document was decrypted and whether it was the
+     |          owner password or the user password.
+     |
+     |  get_object(self, indirect_reference: Union[int, IndirectObject]) -> Optional[PdfObject]
+     |
+     |  read(self, stream: StreamType) -> None
+     |      Read and process the PDF stream, extracting necessary data.
+     |
+     |      Args:
+     |          stream: The PDF file stream.
+     |
+     |  read_object_header(self, stream: StreamType) -> tuple[int, int]
+     |
+     |  rename_form_topname(self, name: str) -> Optional[DictionaryObject]
+     |      Rename top level form field that all form fields below it.
+     |
+     |      Args:
+     |          name: text string of the "/T" field of the created object
+     |
+     |      Returns:
+     |          The modified object. ``None`` means no object was modified.
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties defined here:
+     |
+     |  is_encrypted
+     |      Read-only boolean property showing whether this PDF file is encrypted.
+     |
+     |      Note that this property, if true, will remain true even after the
+     |      :meth:`decrypt()<pypdf.PdfReader.decrypt>` method is called.
+     |
+     |  pdf_header
+     |      The first 8 bytes of the file.
+     |
+     |      This is typically something like ``'%PDF-1.6'`` and can be used to
+     |      detect if the file is actually a PDF file and which version it is.
+     |
+     |  root_object
+     |      Provide access to "/Root". Standardized with PdfWriter.
+     |
+     |  xmp_metadata
+     |      XMP (Extensible Metadata Platform) data.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |
+     |  __abstractmethods__ = frozenset()
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from pypdf._doc_common.PdfDocCommon:
+     |
+     |  decode_permissions(self, permissions_code: int) -> NoReturn
+     |      Take the permissions as an integer, return the allowed access.
+     |
+     |  get_destination_page_number(self, destination: Destination) -> Optional[int]
+     |      Retrieve page number of a given Destination object.
+     |
+     |      Args:
+     |          destination: The destination to get page number.
+     |
+     |      Returns:
+     |          The page number or None if page is not found
+     |
+     |  get_fields(
+     |      self,
+     |      tree: Optional[TreeObject] = None,
+     |      retval: Optional[dict[Any, Any]] = None,
+     |      fileobj: Optional[Any] = None,
+     |      stack: Optional[list[PdfObject]] = None
+     |  ) -> Optional[dict[str, Any]]
+     |      Extract field data if this PDF contains interactive form fields.
+     |
+     |      The *tree*, *retval*, *stack* parameters are for recursive use.
+     |
+     |      Args:
+     |          tree: Current object to parse.
+     |          retval: In-progress list of fields.
+     |          fileobj: A file object (usually a text file) to write
+     |              a report to on all interactive form fields found.
+     |          stack: List of already parsed objects.
+     |
+     |      Returns:
+     |          A dictionary where each key is a field name, and each
+     |          value is a :class:`Field<pypdf.generic.Field>` object. By
+     |          default, the mapping name is used for keys.
+     |          ``None`` if form data could not be located.
+     |
+     |  get_form_text_fields(self, full_qualified_name: bool = False) -> dict[str, Any]
+     |      Retrieve form fields from the document with textual data.
+     |
+     |      Args:
+     |          full_qualified_name: to get full name
+     |
+     |      Returns:
+     |          A dictionary. The key is the name of the form field,
+     |          the value is the content of the field.
+     |
+     |          If the document contains multiple form fields with the same name, the
+     |          second and following will get the suffix .2, .3, ...
+     |
+     |  get_named_dest_root(self) -> ArrayObject
+     |
+     |  get_num_pages(self) -> int
+     |      Calculate the number of pages in this PDF file.
+     |
+     |      Returns:
+     |          The number of pages of the parsed PDF file.
+     |
+     |      Raises:
+     |          PdfReadError: If restrictions prevent this action.
+     |
+     |  get_page(self, page_number: int) -> PageObject
+     |      Retrieve a page by number from this PDF file.
+     |      Most of the time ``.pages[page_number]`` is preferred.
+     |
+     |      Args:
+     |          page_number: The page number to retrieve
+     |              (pages begin at zero)
+     |
+     |      Returns:
+     |          A :class:`PageObject<pypdf._page.PageObject>` instance.
+     |
+     |  get_page_number(self, page: PageObject) -> Optional[int]
+     |      Retrieve page number of a given PageObject.
+     |
+     |      Args:
+     |          page: The page to get page number. Should be
+     |              an instance of :class:`PageObject<pypdf._page.PageObject>`
+     |
+     |      Returns:
+     |          The page number or None if page is not found
+     |
+     |  get_pages_showing_field(self, field: Union[Field, PdfObject, IndirectObject]) -> list[PageObject]
+     |      Provides list of pages where the field is called.
+     |
+     |      Args:
+     |          field: Field Object, PdfObject or IndirectObject referencing a Field
+     |
+     |      Returns:
+     |          List of pages:
+     |              - Empty list:
+     |                  The field has no widgets attached
+     |                  (either hidden field or ancestor field).
+     |              - Single page list:
+     |                  Page where the widget is present
+     |                  (most common).
+     |              - Multi-page list:
+     |                  Field with multiple kids widgets
+     |                  (example: radio buttons, field repeated on multiple pages).
+     |
+     |  remove_page(
+     |      self,
+     |      page: Union[int, PageObject, IndirectObject],
+     |      clean: bool = False
+     |  ) -> None
+     |      Remove page from pages list.
+     |
+     |      Args:
+     |          page:
+     |              * :class:`int`: Page number to be removed.
+     |              * :class:`~pypdf._page.PageObject`: page to be removed. If the page appears many times
+     |                only the first one will be removed.
+     |              * :class:`~pypdf.generic.IndirectObject`: Reference to page to be removed.
+     |
+     |          clean: replace PageObject with NullObject to prevent annotations
+     |              or destinations to reference a detached page.
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties inherited from pypdf._doc_common.PdfDocCommon:
+     |
+     |  are_permissions_valid
+     |      Whether the ``/Perms`` integrity check passed for this document.
+     |
+     |      For AES-256 encrypted documents (R=5/R=6), the ``/Perms`` field
+     |      is an encrypted copy of the permissions that can be verified
+     |      independently. Returns ``False`` if this check fails (the ``/P``
+     |      permissions may have been tampered with).
+     |
+     |      Returns ``None`` if the document is not encrypted or has not yet
+     |      been decrypted via :meth:`decrypt()<pypdf.PdfReader.decrypt>`.
+     |      Returns ``True`` for non-AES-256 encryption (no ``/Perms`` to check).
+     |
+     |  attachment_list
+     |      Iterable of attachment objects.
+     |
+     |  attachments
+     |      Mapping of attachment filenames to their content.
+     |
+     |  metadata
+     |      Retrieve the PDF file's document information dictionary, if it exists.
+     |
+     |      Note that some PDF files use metadata streams instead of document
+     |      information dictionaries, and these metadata streams will not be
+     |      accessed by this function.
+     |
+     |  named_destinations
+     |      A read-only dictionary which maps names to destinations.
+     |
+     |  outline
+     |      Read-only property for the outline present in the document
+     |      (i.e., a collection of 'outline items' which are also known as
+     |      'bookmarks').
+     |
+     |  page_labels
+     |      A list of labels for the pages in this document.
+     |
+     |      This property is read-only. The labels are in the order that the pages
+     |      appear in the document.
+     |
+     |  page_layout
+     |      Get the page layout currently being used.
+     |
+     |      .. list-table:: Valid ``layout`` values
+     |         :widths: 50 200
+     |
+     |         * - /NoLayout
+     |           - Layout explicitly not specified
+     |         * - /SinglePage
+     |           - Show one page at a time
+     |         * - /OneColumn
+     |           - Show one column at a time
+     |         * - /TwoColumnLeft
+     |           - Show pages in two columns, odd-numbered pages on the left
+     |         * - /TwoColumnRight
+     |           - Show pages in two columns, odd-numbered pages on the right
+     |         * - /TwoPageLeft
+     |           - Show two pages at a time, odd-numbered pages on the left
+     |         * - /TwoPageRight
+     |           - Show two pages at a time, odd-numbered pages on the right
+     |
+     |  page_mode
+     |      Get the page mode currently being used.
+     |
+     |      .. list-table:: Valid ``mode`` values
+     |         :widths: 50 200
+     |
+     |         * - /UseNone
+     |           - Do not show outline or thumbnails panels
+     |         * - /UseOutlines
+     |           - Show outline (aka bookmarks) panel
+     |         * - /UseThumbs
+     |           - Show page thumbnails panel
+     |         * - /FullScreen
+     |           - Fullscreen view
+     |         * - /UseOC
+     |           - Show Optional Content Group (OCG) panel
+     |         * - /UseAttachments
+     |           - Show attachments panel
+     |
+     |  pages
+     |      Property that emulates a list of :class:`PageObject<pypdf._page.PageObject>`.
+     |      This property allows to get a page or a range of pages.
+     |
+     |      Note:
+     |          For PdfWriter only: Provides the capability to remove a page/range of
+     |          page from the list (using the del operator). Remember: Only the page
+     |          entry is removed, as the objects beneath can be used elsewhere. A
+     |          solution to completely remove them - if they are not used anywhere - is
+     |          to write to a buffer/temporary file and then load it into a new
+     |          PdfWriter.
+     |
+     |  threads
+     |      Read-only property for the list of threads.
+     |
+     |      See §12.4.3 from the PDF 1.7 or 2.0 specification.
+     |
+     |      It is an array of dictionaries with "/F" (the first bead in the thread)
+     |      and "/I" (a thread information dictionary containing information about
+     |      the thread, such as its title, author, and creation date) properties or
+     |      None if there are no articles.
+     |
+     |      Since PDF 2.0 it can also contain an indirect reference to a metadata
+     |      stream containing information about the thread, such as its title,
+     |      author, and creation date.
+     |
+     |  user_access_permissions
+     |      Get the user access permissions for encrypted documents.
+     |      Returns None if not encrypted.
+     |
+     |      .. warning::
+     |
+     |          For AES-256 encrypted documents (R=5/R=6), the returned
+     |          permissions are derived from the ``/P`` field, which is
+     |          only trustworthy if the ``/Perms`` integrity check passed.
+     |          Check :attr:`are_permissions_valid` to verify.
+     |
+     |  viewer_preferences
+     |      Returns the existing ViewerPreferences as an overloaded dictionary.
+     |
+     |  xfa
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from pypdf._doc_common.PdfDocCommon:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  __weakref__
+     |      list of weak references to the object
+     |
+     |  open_destination
+     |      Property to access the opening destination (``/OpenAction`` entry in
+     |      the PDF catalog). It returns ``None`` if the entry does not exist
+     |      or is not set.
+     |
+     |      Raises:
+     |          Exception: If a destination is invalid.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from pypdf._doc_common.PdfDocCommon:
+     |
+     |  flattened_pages = None
+     |
+     |  strict = False
+
+    class PdfWriter(pypdf._doc_common.PdfDocCommon)
+     |  PdfWriter(
+     |      fileobj: Union[None, PdfReader, StrByteType, Path] = '',
+     |      clone_from: Union[None, PdfReader, StrByteType, Path] = None,
+     |      incremental: bool = False,
+     |      full: bool = False,
+     |      strict: bool = False,
+     |      *,
+     |      incremental_clone_object_count_limit: Optional[int] = 500000,
+     |      incremental_clone_object_id_limit: Optional[int] = 1000000
+     |  ) -> None
+     |
+     |  Write a PDF file out, given pages produced by another class or through
+     |  cloning a PDF file during initialization.
+     |
+     |  Typically data is added from a :class:`PdfReader<pypdf.PdfReader>`.
+     |
+     |  Args:
+     |      clone_from: identical to fileobj (for compatibility)
+     |
+     |      incremental: If true, loads the document and set the PdfWriter in incremental mode.
+     |
+     |          When writing incrementally, the original document is written first and new/modified
+     |          content is appended. To be used for signed document/forms to keep signature valid.
+     |
+     |      full: If true, loads all the objects (always full if incremental = True).
+     |          This parameter may allow loading large PDFs.
+     |
+     |      strict: If true, pypdf will raise an exception if a PDF does not follow the specification.
+     |          If false, pypdf will try to be forgiving and do something reasonable, but it will log
+     |          a warning message. It is a best-effort approach.
+     |
+     |  Method resolution order:
+     |      PdfWriter
+     |      pypdf._doc_common.PdfDocCommon
+     |      abc.ABC
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __enter__(self) -> Self
+     |      Store how writer is initialized by 'with'.
+     |
+     |  __exit__(
+     |      self,
+     |      exc_type: Optional[type[BaseException]],
+     |      exc: Optional[BaseException],
+     |      traceback: Optional[TracebackType]
+     |  ) -> None
+     |      Write data to the fileobj.
+     |
+     |  __init__(
+     |      self,
+     |      fileobj: Union[None, PdfReader, StrByteType, Path] = '',
+     |      clone_from: Union[None, PdfReader, StrByteType, Path] = None,
+     |      incremental: bool = False,
+     |      full: bool = False,
+     |      strict: bool = False,
+     |      *,
+     |      incremental_clone_object_count_limit: Optional[int] = 500000,
+     |      incremental_clone_object_id_limit: Optional[int] = 1000000
+     |  ) -> None
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  add_annotation(
+     |      self,
+     |      page_number: Union[int, PageObject],
+     |      annotation: dict[str, Any]
+     |  ) -> DictionaryObject
+     |      Add a single annotation to the page.
+     |      The added annotation must be a new annotation.
+     |      It cannot be recycled.
+     |
+     |      Args:
+     |          page_number: PageObject or page index.
+     |          annotation: Annotation to be added (created with annotation).
+     |
+     |      Returns:
+     |          The inserted object.
+     |          This can be used for popup creation, for example.
+     |
+     |  add_attachment(self, filename: str, data: Union[str, bytes]) -> EmbeddedFile
+     |      Embed a file inside the PDF.
+     |
+     |      Reference:
+     |      https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf
+     |      Section 7.11.3
+     |
+     |      Args:
+     |          filename: The filename to display.
+     |          data: The data in the file.
+     |
+     |      Returns:
+     |          EmbeddedFile instance for the newly created embedded file.
+     |
+     |  add_blank_page(
+     |      self,
+     |      width: Optional[float] = None,
+     |      height: Optional[float] = None
+     |  ) -> PageObject
+     |      Append a blank page to this PDF file and return it.
+     |
+     |      If no page size is specified, use the size of the last page.
+     |
+     |      Args:
+     |          width: The width of the new page expressed in default user
+     |              space units.
+     |          height: The height of the new page expressed in default
+     |              user space units.
+     |
+     |      Returns:
+     |          The newly appended page.
+     |
+     |      Raises:
+     |          PageSizeNotDefinedError: if width and height are not defined
+     |              and previous page does not exist.
+     |
+     |  add_filtered_articles(
+     |      self,
+     |      fltr: Union[Pattern[Any], str],
+     |      pages: dict[int, PageObject],
+     |      reader: PdfReader
+     |  ) -> None
+     |      Add articles matching the defined criteria.
+     |
+     |      Args:
+     |          fltr:
+     |          pages:
+     |          reader:
+     |
+     |  add_js(self, javascript: str) -> None
+     |      Add JavaScript which will launch upon opening this PDF.
+     |
+     |      Args:
+     |          javascript: Your JavaScript.
+     |
+     |      Example:
+     |          This will launch the print window when the PDF is opened.
+     |
+     |          >>> from pypdf import PdfWriter
+     |          >>> output = PdfWriter()
+     |          >>> output.add_js("this.print({bUI:true,bSilent:false,bShrinkToFit:true});")
+     |
+     |  add_metadata(self, infos: dict[str, Any]) -> None
+     |      Add custom metadata to the output.
+     |
+     |      Args:
+     |          infos: a Python dictionary where each key is a field
+     |              and each value is your new metadata.
+     |
+     |  add_named_destination(self, title: str, page_number: int) -> IndirectObject
+     |
+     |  add_named_destination_array(
+     |      self,
+     |      title: TextStringObject,
+     |      destination: Union[IndirectObject, ArrayObject]
+     |  ) -> None
+     |
+     |  add_named_destination_object(self, page_destination: PdfObject) -> IndirectObject
+     |
+     |  add_outline(self) -> None
+     |
+     |  add_outline_item(
+     |      self,
+     |      title: str,
+     |      page_number: Union[None, PageObject, IndirectObject, int],
+     |      parent: Union[None, TreeObject, IndirectObject] = None,
+     |      before: Union[None, TreeObject, IndirectObject] = None,
+     |      color: Optional[Union[tuple[float, float, float], str]] = None,
+     |      bold: bool = False,
+     |      italic: bool = False,
+     |      fit: Fit = <pypdf.generic._fit.Fit object at 0x7f970457e850>,
+     |      is_open: bool = True
+     |  ) -> IndirectObject
+     |      Add an outline item (commonly referred to as a "Bookmark") to the PDF file.
+     |
+     |      Args:
+     |          title: Title to use for this outline item.
+     |          page_number: Page number this outline item will point to.
+     |          parent: A reference to a parent outline item to create nested
+     |              outline items.
+     |          before:
+     |          color: Color of the outline item's font as a red, green, blue tuple
+     |              from 0.0 to 1.0 or as a Hex String (#RRGGBB)
+     |          bold: Outline item font is bold
+     |          italic: Outline item font is italic
+     |          fit: The fit of the destination page.
+     |
+     |      Returns:
+     |          The added outline item as an indirect object.
+     |
+     |  add_outline_item_destination(
+     |      self,
+     |      page_destination: Union[IndirectObject, PageObject, TreeObject],
+     |      parent: Union[None, TreeObject, IndirectObject] = None,
+     |      before: Union[None, TreeObject, IndirectObject] = None,
+     |      is_open: bool = True
+     |  ) -> IndirectObject
+     |
+     |  add_outline_item_dict(
+     |      self,
+     |      outline_item: OutlineItemType,
+     |      parent: Union[None, TreeObject, IndirectObject] = None,
+     |      before: Union[None, TreeObject, IndirectObject] = None,
+     |      is_open: bool = True
+     |  ) -> IndirectObject
+     |
+     |  add_page(self, page: PageObject, excluded_keys: Iterable[str] = ()) -> PageObject
+     |      Add a page to this PDF file.
+     |
+     |      Recommended for advanced usage including the adequate excluded_keys.
+     |
+     |      The page is usually acquired from a :class:`PdfReader<pypdf.PdfReader>`
+     |      instance.
+     |
+     |      Args:
+     |          page: The page to add to the document. Should be
+     |              an instance of :class:`PageObject<pypdf._page.PageObject>`
+     |          excluded_keys:
+     |
+     |      Returns:
+     |          The added PageObject.
+     |
+     |  add_uri(
+     |      self,
+     |      page_number: int,
+     |      uri: str,
+     |      rect: RectangleObject,
+     |      border: Optional[ArrayObject] = None
+     |  ) -> None
+     |      Add an URI from a rectangular area to the specified page.
+     |
+     |      Args:
+     |          page_number: index of the page on which to place the URI action.
+     |          uri: URI of resource to link to.
+     |          rect: :class:`RectangleObject<pypdf.generic.RectangleObject>` or
+     |              array of four integers specifying the clickable rectangular area
+     |              ``[xLL, yLL, xUR, yUR]``, or string in the form
+     |              ``"[ xLL yLL xUR yUR ]"``.
+     |          border: if provided, an array describing border-drawing
+     |              properties. See the PDF spec for details. No border will be
+     |              drawn if this argument is omitted.
+     |
+     |  append(
+     |      self,
+     |      fileobj: Union[StrByteType, PdfReader, Path],
+     |      outline_item: Union[str, None, PageRange, tuple[int, int], tuple[int, int, int], list[int]] = None,
+     |      pages: Union[None, PageRange, tuple[int, int], tuple[int, int, int], list[int], list[PageObject]] = None,
+     |      import_outline: bool = True,
+     |      excluded_fields: Optional[Union[list[str], tuple[str, ...]]] = None
+     |  ) -> None
+     |      Identical to the :meth:`merge()<merge>` method, but assumes you want to
+     |      concatenate all pages onto the end of the file instead of specifying a
+     |      position.
+     |
+     |      Args:
+     |          fileobj: A File Object or an object that supports the standard
+     |              read and seek methods similar to a File Object. Could also be a
+     |              string representing a path to a PDF file.
+     |          outline_item: Optionally, you may specify a string to build an
+     |              outline (aka 'bookmark') to identify the beginning of the
+     |              included file.
+     |          pages: Can be a :class:`PageRange<pypdf.pagerange.PageRange>`
+     |              or a ``(start, stop[, step])`` tuple
+     |              or a list of pages to be processed
+     |              to merge only the specified range of pages from the source
+     |              document into the output document.
+     |          import_outline: You may prevent the source document's
+     |              outline (collection of outline items, previously referred to as
+     |              'bookmarks') from being imported by specifying this as ``False``.
+     |          excluded_fields: Provide the list of fields/keys to be ignored
+     |              if ``/Annots`` is part of the list, the annotation will be ignored
+     |              if ``/B`` is part of the list, the articles will be ignored
+     |
+     |  append_pages_from_reader(
+     |      self,
+     |      reader: PdfReader,
+     |      after_page_append: Optional[Callable[[PageObject], None]] = None
+     |  ) -> None
+     |      Copy pages from reader to writer. Includes an optional callback
+     |      parameter which is invoked after pages are appended to the writer.
+     |
+     |      ``append`` should be preferred.
+     |
+     |      Args:
+     |          reader: a PdfReader object from which to copy page
+     |              annotations to this writer object. The writer's annots
+     |              will then be updated.
+     |          after_page_append:
+     |              Callback function that is invoked after each page is appended to
+     |              the writer. Signature includes a reference to the appended page
+     |              (delegates to append_pages_from_reader). The single parameter of
+     |              the callback is a reference to the page just appended to the
+     |              document.
+     |
+     |  clean_page(self, page: Union[PageObject, IndirectObject]) -> PageObject
+     |      Perform some clean up in the page.
+     |      Currently: convert NameObject named destination to TextStringObject
+     |      (required for names/dests list)
+     |
+     |      Args:
+     |          page:
+     |
+     |      Returns:
+     |          The cleaned PageObject
+     |
+     |  clone_document_from_reader(
+     |      self,
+     |      reader: PdfReader,
+     |      after_page_append: Optional[Callable[[PageObject], None]] = None
+     |  ) -> None
+     |      Create a copy (clone) of a document from a PDF file reader cloning
+     |      section '/Root' and '/Info' and '/ID' of the pdf.
+     |
+     |      Args:
+     |          reader: PDF file reader instance from which the clone
+     |              should be created.
+     |          after_page_append:
+     |              Callback function that is invoked after each page is appended to
+     |              the writer. Signature includes a reference to the appended page
+     |              (delegates to append_pages_from_reader). The single parameter of
+     |              the callback is a reference to the page just appended to the
+     |              document.
+     |
+     |  clone_reader_document_root(self, reader: PdfReader) -> None
+     |      Copy the reader document root to the writer and all sub-elements,
+     |      including pages, threads, outlines,... For partial insertion, ``append``
+     |      should be considered.
+     |
+     |      Args:
+     |          reader: PdfReader from which the document root should be copied.
+     |
+     |  close(self) -> None
+     |      Implemented for API harmonization.
+     |
+     |  compress_identical_objects(
+     |      self,
+     |      remove_identicals: Any = <object object at 0x7f9713988e50>,
+     |      remove_orphans: Any = <object object at 0x7f9713988e50>,
+     |      *,
+     |      remove_duplicates: bool = True,
+     |      remove_unreferenced: bool = True
+     |  ) -> None
+     |      Parse the PDF file and merge objects that have the same hash.
+     |      This will make objects common to multiple pages.
+     |      Recommended to be used just before writing output.
+     |
+     |      Args:
+     |          remove_identicals: Deprecated.
+     |          remove_orphans: Deprecated.
+     |          remove_duplicates: Remove duplicate objects.
+     |          remove_unreferenced: Remove unreferenced objects.
+     |
+     |  create_viewer_preferences(self) -> ViewerPreferences
+     |
+     |  encrypt(
+     |      self,
+     |      user_password: str,
+     |      owner_password: Optional[str] = None,
+     |      use_128bit: bool = True,
+     |      permissions_flag: UserAccessPermissions = <UserAccessPermissions.PRINT|MODIFY|EXTRACT|ADD_OR_MODIFY|R7|R8|FILL_FORM_FIELDS|EXTRACT_TEXT_AND_GRAPHICS|ASSEMBLE_DOC|PRINT_TO_REPRESENTATION|R13|R14|R15|R16|R17|R18|R19|R20|R21|R22|R23|R24|R25|R26|R27|R28|R29|R30|R31|R32: 4294967292>,
+     |      *,
+     |      algorithm: Optional[str] = None
+     |  ) -> None
+     |      Encrypt this PDF file with the PDF Standard encryption handler.
+     |
+     |      Args:
+     |          user_password: The password which allows for opening
+     |              and reading the PDF file with the restrictions provided.
+     |          owner_password: The password which allows for
+     |              opening the PDF files without any restrictions. By default,
+     |              the owner password is the same as the user password.
+     |          use_128bit: flag as to whether to use 128bit
+     |              encryption. When false, 40bit encryption will be used.
+     |              By default, this flag is on.
+     |          permissions_flag: permissions as described in
+     |              Table 3.20 of the PDF 1.7 specification. A bit value of 1 means
+     |              the permission is granted.
+     |              Hence an integer value of -1 will set all flags.
+     |              Bit position 3 is for printing, 4 is for modifying content,
+     |              5 and 6 control annotations, 9 for form fields,
+     |              10 for extraction of text and graphics.
+     |          algorithm: encrypt algorithm. Values may be one of "RC4-40", "RC4-128",
+     |              "AES-128", "AES-256-R5", "AES-256". If it is valid,
+     |              `use_128bit` will be ignored.
+     |
+     |  find_outline_item(
+     |      self,
+     |      outline_item: dict[str, Any],
+     |      root: Optional[OutlineType] = None
+     |  ) -> Optional[list[int]]
+     |
+     |  generate_file_identifiers(self) -> None
+     |      Generate an identifier for the PDF that will be written.
+     |
+     |      The only point of this is ensuring uniqueness. Reproducibility is not
+     |      required.
+     |      When a file is first written, both identifiers shall be set to the same value.
+     |      If both identifiers match when a file reference is resolved, it is very
+     |      likely that the correct and unchanged file has been found. If only the first
+     |      identifier matches, a different version of the correct file has been found.
+     |      see §14.4 "File Identifiers".
+     |
+     |  get_object(self, indirect_reference: Union[int, IndirectObject]) -> PdfObject
+     |
+     |  get_outline_root(self) -> TreeObject
+     |
+     |  get_reference(self, obj: PdfObject) -> IndirectObject
+     |
+     |  get_threads_root(self) -> ArrayObject
+     |      The list of threads.
+     |
+     |      See §12.4.3 of the PDF 1.7 or PDF 2.0 specification.
+     |
+     |      Returns:
+     |          An array (possibly empty) of Dictionaries with an ``/F`` key,
+     |          and optionally information about the thread in ``/I`` or ``/Metadata`` keys.
+     |
+     |  insert_blank_page(
+     |      self,
+     |      width: Optional[Union[float, decimal.Decimal]] = None,
+     |      height: Optional[Union[float, decimal.Decimal]] = None,
+     |      index: int = 0
+     |  ) -> PageObject
+     |      Insert a blank page to this PDF file and return it.
+     |
+     |      If no page size is specified for a dimension, use the size of the last page.
+     |
+     |      Args:
+     |          width: The width of the new page in default user space units.
+     |          height: The height of the new page in default user space units.
+     |          index: Position to add the page.
+     |
+     |      Returns:
+     |          The newly inserted page.
+     |
+     |      Raises:
+     |          PageSizeNotDefinedError: if width and height are not defined
+     |              and previous page does not exist.
+     |          IndexError: Index is outside of [-self.get_num_pages(), self.get_num_pages()]
+     |
+     |  insert_page(
+     |      self,
+     |      page: PageObject,
+     |      index: int = 0,
+     |      excluded_keys: Iterable[str] = ()
+     |  ) -> PageObject
+     |      Insert a page in this PDF file. The page is usually acquired from a
+     |      :class:`PdfReader<pypdf.PdfReader>` instance.
+     |
+     |      Args:
+     |          page: The page to add to the document.
+     |          index: Position at which the page will be inserted.
+     |          excluded_keys:
+     |
+     |      Returns:
+     |          The added PageObject.
+     |
+     |  list_objects_in_increment(self) -> list[IndirectObject]
+     |      For analysis or debugging.
+     |      Provides the list of new or modified objects that will be written
+     |      in the increment.
+     |      Deleted objects will not be freed but will become orphans.
+     |
+     |      Returns:
+     |          List of new or modified IndirectObjects
+     |
+     |  merge(
+     |      self,
+     |      position: Optional[int],
+     |      fileobj: Union[Path, StrByteType, PdfReader],
+     |      outline_item: Optional[str] = None,
+     |      pages: Optional[Union[PageRangeSpec, list[PageObject]]] = None,
+     |      import_outline: bool = True,
+     |      excluded_fields: Optional[Union[list[str], tuple[str, ...]]] = ()
+     |  ) -> None
+     |      Merge the pages from the given file into the output file at the
+     |      specified page number.
+     |
+     |      Args:
+     |          position: The *page number* to insert this file. File will
+     |              be inserted after the given number.
+     |          fileobj: A File Object or an object that supports the standard
+     |              read and seek methods similar to a File Object. Could also be a
+     |              string representing a path to a PDF file.
+     |          outline_item: Optionally, you may specify a string to build an outline
+     |              (aka 'bookmark') to identify the
+     |              beginning of the included file.
+     |          pages: can be a :class:`PageRange<pypdf.pagerange.PageRange>`
+     |              or a ``(start, stop[, step])`` tuple
+     |              or a list of pages to be processed
+     |              to merge only the specified range of pages from the source
+     |              document into the output document.
+     |          import_outline: You may prevent the source document's
+     |              outline (collection of outline items, previously referred to as
+     |              'bookmarks') from being imported by specifying this as ``False``.
+     |          excluded_fields: provide the list of fields/keys to be ignored
+     |              if ``/Annots`` is part of the list, the annotation will be ignored
+     |              if ``/B`` is part of the list, the articles will be ignored
+     |
+     |      Raises:
+     |          TypeError: The pages attribute is not configured properly
+     |
+     |  reattach_fields(self, page: Optional[PageObject] = None) -> list[DictionaryObject]
+     |      Parse annotations within the page looking for orphan fields and
+     |      reattach then into the Fields Structure.
+     |
+     |      Args:
+     |          page: page to analyze.
+     |                If none is provided, all pages will be analyzed.
+     |
+     |      Returns:
+     |          list of reattached fields.
+     |
+     |  remove_annotations(
+     |      self,
+     |      subtypes: Optional[Union[AnnotationSubtype, Iterable[AnnotationSubtype]]]
+     |  ) -> None
+     |      Remove annotations by annotation subtype.
+     |
+     |      Args:
+     |          subtypes: subtype or list of subtypes to be removed.
+     |              Examples are: "/Link", "/FileAttachment", "/Sound",
+     |              "/Movie", "/Screen", ...
+     |              If you want to remove all annotations, use subtypes=None.
+     |
+     |  remove_images(self, to_delete: ImageType = <ImageType.ALL: 7>) -> None
+     |      Remove images from this output.
+     |
+     |      Args:
+     |          to_delete: The type of images to be deleted
+     |              (default = all images types)
+     |
+     |  remove_links(self) -> None
+     |      Remove links and annotations from this output.
+     |
+     |  remove_objects_from_page(
+     |      self,
+     |      page: Union[PageObject, DictionaryObject],
+     |      to_delete: Union[ObjectDeletionFlag, Iterable[ObjectDeletionFlag]],
+     |      text_filters: Optional[dict[str, Any]] = None
+     |  ) -> None
+     |      Remove objects specified by ``to_delete`` from the given page.
+     |
+     |      Args:
+     |          page: Page object to clean up.
+     |          to_delete: Objects to be deleted; can be a ``ObjectDeletionFlag``
+     |              or a list of ObjectDeletionFlag
+     |          text_filters: Properties of text to be deleted, if applicable. Optional.
+     |              This is a Python dictionary with the following properties:
+     |
+     |              * font_ids: List of font resource IDs (such as /F1 or /T1_0) to be deleted.
+     |
+     |  remove_text(self, font_names: Optional[list[str]] = None) -> None
+     |      Remove text from the PDF.
+     |
+     |      Args:
+     |          font_names: List of font names to remove, such as "Helvetica-Bold".
+     |              Optional. If not specified, all text will be removed.
+     |
+     |  reset_translation(self, reader: Union[None, PdfReader, IndirectObject] = None) -> None
+     |      Reset the translation table between reader and the writer object.
+     |
+     |      Late cloning will create new independent objects.
+     |
+     |      Args:
+     |          reader: PdfReader or IndirectObject referencing a PdfReader object.
+     |              if set to None or omitted, all tables will be reset.
+     |
+     |  set_need_appearances_writer(self, state: bool = True) -> None
+     |      Sets the "NeedAppearances" flag in the PDF writer.
+     |
+     |      The "NeedAppearances" flag indicates whether the appearance dictionary
+     |      for form fields should be automatically generated by the PDF viewer or
+     |      if the embedded appearance should be used.
+     |
+     |      Args:
+     |          state: The actual value of the NeedAppearances flag.
+     |
+     |      Returns:
+     |          None
+     |
+     |  set_page_label(
+     |      self,
+     |      page_index_from: int,
+     |      page_index_to: int,
+     |      style: Optional[PageLabelStyle] = None,
+     |      prefix: Optional[str] = None,
+     |      start: Optional[int] = 0
+     |  ) -> None
+     |      Set a page label to a range of pages.
+     |
+     |      Page indexes must be given starting from 0.
+     |      Labels must have a style, a prefix or both.
+     |      If a range is not assigned any page label, a decimal label starting from 1 is applied.
+     |
+     |      Args:
+     |          page_index_from: page index of the beginning of the range starting from 0
+     |          page_index_to: page index of the beginning of the range starting from 0
+     |          style: The numbering style to be used for the numeric portion of each page label:
+     |
+     |                     * ``/D`` Decimal Arabic numerals
+     |                     * ``/R`` Uppercase Roman numerals
+     |                     * ``/r`` Lowercase Roman numerals
+     |                     * ``/A`` Uppercase letters (A to Z for the first 26 pages,
+     |                       AA to ZZ for the next 26, and so on)
+     |                     * ``/a`` Lowercase letters (a to z for the first 26 pages,
+     |                       aa to zz for the next 26, and so on)
+     |
+     |          prefix: The label prefix for page labels in this range.
+     |          start:  The value of the numeric portion for the first page label
+     |                  in the range.
+     |                  Subsequent pages are numbered sequentially from this value,
+     |                  which must be greater than or equal to 1.
+     |                  Default value: 1.
+     |
+     |  set_page_layout(self, layout: LayoutType) -> None
+     |      Set the page layout.
+     |
+     |      Args:
+     |          layout: The page layout to be used
+     |
+     |      .. list-table:: Valid ``layout`` arguments
+     |         :widths: 50 200
+     |
+     |         * - /NoLayout
+     |           - Layout explicitly not specified
+     |         * - /SinglePage
+     |           - Show one page at a time
+     |         * - /OneColumn
+     |           - Show one column at a time
+     |         * - /TwoColumnLeft
+     |           - Show pages in two columns, odd-numbered pages on the left
+     |         * - /TwoColumnRight
+     |           - Show pages in two columns, odd-numbered pages on the right
+     |         * - /TwoPageLeft
+     |           - Show two pages at a time, odd-numbered pages on the left
+     |         * - /TwoPageRight
+     |           - Show two pages at a time, odd-numbered pages on the right
+     |
+     |  update_page_form_field_values(
+     |      self,
+     |      page: Union[PageObject, list[PageObject], None],
+     |      fields: Mapping[str, Union[str, list[str], tuple[str, str, float]]],
+     |      flags: FA.FfBits = <FfBits: 0>,
+     |      auto_regenerate: Optional[bool] = True,
+     |      flatten: bool = False
+     |  ) -> None
+     |      Update the form field values for a given page from a fields dictionary.
+     |
+     |      Copy field texts and values from fields to page.
+     |      If the field links to a parent object, add the information to the parent.
+     |
+     |      Args:
+     |          page: `PageObject` - references **PDF writer's page** where the
+     |              annotations and field data will be updated.
+     |              `List[Pageobject]` - provides list of pages to be processed.
+     |              `None` - all pages.
+     |          fields: a Python dictionary of:
+     |
+     |              * field names (/T) as keys and text values (/V) as value
+     |              * field names (/T) as keys and list of text values (/V) for multiple choice list
+     |              * field names (/T) as keys and tuple of:
+     |                  * text values (/V)
+     |                  * font id (e.g. /F1, the font id must exist)
+     |                  * font size (0 for autosize)
+     |
+     |          flags: A set of flags from :class:`~pypdf.constants.FieldDictionaryAttributes.FfBits`.
+     |
+     |          auto_regenerate: Set/unset the need_appearances flag;
+     |              the flag is unchanged if auto_regenerate is None.
+     |
+     |          flatten: Whether or not to flatten the annotation. If True, this adds the annotation's
+     |              appearance stream to the page contents. Note that this option does not remove the
+     |              annotation itself.
+     |
+     |  write(self, stream: Union[Path, StrByteType]) -> tuple[bool, IO[Any]]
+     |      Write the collection of pages added to this object out as a PDF file.
+     |
+     |      Args:
+     |          stream: An object to write the file to. The object can support
+     |              the write method and the tell method, similar to a file object, or
+     |              be a file path, just like the fileobj, just named it stream to keep
+     |              existing workflow.
+     |
+     |      Returns:
+     |          A tuple (bool, IO).
+     |
+     |  write_stream(self, stream: StreamType) -> None
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties defined here:
+     |
+     |  is_encrypted
+     |      Read-only boolean property showing whether this PDF file is encrypted.
+     |
+     |      Note that this property, if true, will remain true even after the
+     |      :meth:`decrypt()<pypdf.PdfReader.decrypt>` method is called.
+     |
+     |  root_object
+     |      Provide direct access to PDF Structure.
+     |
+     |      Note:
+     |          Recommended only for read access.
+     |
+     |  threads
+     |      Read-only property for the list of threads.
+     |
+     |      See §12.4.3 of the PDF 1.7 or PDF 2.0 specification.
+     |
+     |      Each element is a dictionary with an ``/F`` key, and optionally
+     |      information about the thread in ``/I`` or ``/Metadata`` keys.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  metadata
+     |      Retrieve/set the PDF file's document information dictionary, if it exists.
+     |
+     |      Args:
+     |          value: dict with the entries to be set. if None : remove the /Info entry from the pdf.
+     |
+     |      Note that some PDF files use (XMP) metadata streams instead of document
+     |      information dictionaries, and these metadata streams will not be
+     |      accessed by this function, but by :meth:`~xmp_metadata`.
+     |
+     |  open_destination
+     |      Property to access the opening destination (``/OpenAction`` entry in
+     |      the PDF catalog). It returns ``None`` if the entry does not exist
+     |      or is not set.
+     |
+     |      Raises:
+     |          Exception: If a destination is invalid.
+     |
+     |  page_layout
+     |      Page layout property.
+     |
+     |      .. list-table:: Valid ``layout`` values
+     |         :widths: 50 200
+     |
+     |         * - /NoLayout
+     |           - Layout explicitly not specified
+     |         * - /SinglePage
+     |           - Show one page at a time
+     |         * - /OneColumn
+     |           - Show one column at a time
+     |         * - /TwoColumnLeft
+     |           - Show pages in two columns, odd-numbered pages on the left
+     |         * - /TwoColumnRight
+     |           - Show pages in two columns, odd-numbered pages on the right
+     |         * - /TwoPageLeft
+     |           - Show two pages at a time, odd-numbered pages on the left
+     |         * - /TwoPageRight
+     |           - Show two pages at a time, odd-numbered pages on the right
+     |
+     |  page_mode
+     |      Page mode property.
+     |
+     |      .. list-table:: Valid ``mode`` values
+     |         :widths: 50 200
+     |
+     |         * - /UseNone
+     |           - Do not show outline or thumbnails panels
+     |         * - /UseOutlines
+     |           - Show outline (aka bookmarks) panel
+     |         * - /UseThumbs
+     |           - Show page thumbnails panel
+     |         * - /FullScreen
+     |           - Fullscreen view
+     |         * - /UseOC
+     |           - Show Optional Content Group (OCG) panel
+     |         * - /UseAttachments
+     |           - Show attachments panel
+     |
+     |  pdf_header
+     |      Read/Write property of the PDF header that is written.
+     |
+     |      This should be something like ``'%PDF-1.5'``. It is recommended to set
+     |      the lowest version that supports all features which are used within the
+     |      PDF file.
+     |
+     |      Note: `pdf_header` returns a string but accepts bytes or str for writing
+     |
+     |  with_as_usage
+     |
+     |  xmp_metadata
+     |      XMP (Extensible Metadata Platform) data.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |
+     |  FFBITS_NUL = <FfBits: 0>
+     |
+     |  __abstractmethods__ = frozenset()
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from pypdf._doc_common.PdfDocCommon:
+     |
+     |  decode_permissions(self, permissions_code: int) -> NoReturn
+     |      Take the permissions as an integer, return the allowed access.
+     |
+     |  get_destination_page_number(self, destination: Destination) -> Optional[int]
+     |      Retrieve page number of a given Destination object.
+     |
+     |      Args:
+     |          destination: The destination to get page number.
+     |
+     |      Returns:
+     |          The page number or None if page is not found
+     |
+     |  get_fields(
+     |      self,
+     |      tree: Optional[TreeObject] = None,
+     |      retval: Optional[dict[Any, Any]] = None,
+     |      fileobj: Optional[Any] = None,
+     |      stack: Optional[list[PdfObject]] = None
+     |  ) -> Optional[dict[str, Any]]
+     |      Extract field data if this PDF contains interactive form fields.
+     |
+     |      The *tree*, *retval*, *stack* parameters are for recursive use.
+     |
+     |      Args:
+     |          tree: Current object to parse.
+     |          retval: In-progress list of fields.
+     |          fileobj: A file object (usually a text file) to write
+     |              a report to on all interactive form fields found.
+     |          stack: List of already parsed objects.
+     |
+     |      Returns:
+     |          A dictionary where each key is a field name, and each
+     |          value is a :class:`Field<pypdf.generic.Field>` object. By
+     |          default, the mapping name is used for keys.
+     |          ``None`` if form data could not be located.
+     |
+     |  get_form_text_fields(self, full_qualified_name: bool = False) -> dict[str, Any]
+     |      Retrieve form fields from the document with textual data.
+     |
+     |      Args:
+     |          full_qualified_name: to get full name
+     |
+     |      Returns:
+     |          A dictionary. The key is the name of the form field,
+     |          the value is the content of the field.
+     |
+     |          If the document contains multiple form fields with the same name, the
+     |          second and following will get the suffix .2, .3, ...
+     |
+     |  get_named_dest_root(self) -> ArrayObject
+     |
+     |  get_num_pages(self) -> int
+     |      Calculate the number of pages in this PDF file.
+     |
+     |      Returns:
+     |          The number of pages of the parsed PDF file.
+     |
+     |      Raises:
+     |          PdfReadError: If restrictions prevent this action.
+     |
+     |  get_page(self, page_number: int) -> PageObject
+     |      Retrieve a page by number from this PDF file.
+     |      Most of the time ``.pages[page_number]`` is preferred.
+     |
+     |      Args:
+     |          page_number: The page number to retrieve
+     |              (pages begin at zero)
+     |
+     |      Returns:
+     |          A :class:`PageObject<pypdf._page.PageObject>` instance.
+     |
+     |  get_page_number(self, page: PageObject) -> Optional[int]
+     |      Retrieve page number of a given PageObject.
+     |
+     |      Args:
+     |          page: The page to get page number. Should be
+     |              an instance of :class:`PageObject<pypdf._page.PageObject>`
+     |
+     |      Returns:
+     |          The page number or None if page is not found
+     |
+     |  get_pages_showing_field(self, field: Union[Field, PdfObject, IndirectObject]) -> list[PageObject]
+     |      Provides list of pages where the field is called.
+     |
+     |      Args:
+     |          field: Field Object, PdfObject or IndirectObject referencing a Field
+     |
+     |      Returns:
+     |          List of pages:
+     |              - Empty list:
+     |                  The field has no widgets attached
+     |                  (either hidden field or ancestor field).
+     |              - Single page list:
+     |                  Page where the widget is present
+     |                  (most common).
+     |              - Multi-page list:
+     |                  Field with multiple kids widgets
+     |                  (example: radio buttons, field repeated on multiple pages).
+     |
+     |  remove_page(
+     |      self,
+     |      page: Union[int, PageObject, IndirectObject],
+     |      clean: bool = False
+     |  ) -> None
+     |      Remove page from pages list.
+     |
+     |      Args:
+     |          page:
+     |              * :class:`int`: Page number to be removed.
+     |              * :class:`~pypdf._page.PageObject`: page to be removed. If the page appears many times
+     |                only the first one will be removed.
+     |              * :class:`~pypdf.generic.IndirectObject`: Reference to page to be removed.
+     |
+     |          clean: replace PageObject with NullObject to prevent annotations
+     |              or destinations to reference a detached page.
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties inherited from pypdf._doc_common.PdfDocCommon:
+     |
+     |  are_permissions_valid
+     |      Whether the ``/Perms`` integrity check passed for this document.
+     |
+     |      For AES-256 encrypted documents (R=5/R=6), the ``/Perms`` field
+     |      is an encrypted copy of the permissions that can be verified
+     |      independently. Returns ``False`` if this check fails (the ``/P``
+     |      permissions may have been tampered with).
+     |
+     |      Returns ``None`` if the document is not encrypted or has not yet
+     |      been decrypted via :meth:`decrypt()<pypdf.PdfReader.decrypt>`.
+     |      Returns ``True`` for non-AES-256 encryption (no ``/Perms`` to check).
+     |
+     |  attachment_list
+     |      Iterable of attachment objects.
+     |
+     |  attachments
+     |      Mapping of attachment filenames to their content.
+     |
+     |  named_destinations
+     |      A read-only dictionary which maps names to destinations.
+     |
+     |  outline
+     |      Read-only property for the outline present in the document
+     |      (i.e., a collection of 'outline items' which are also known as
+     |      'bookmarks').
+     |
+     |  page_labels
+     |      A list of labels for the pages in this document.
+     |
+     |      This property is read-only. The labels are in the order that the pages
+     |      appear in the document.
+     |
+     |  pages
+     |      Property that emulates a list of :class:`PageObject<pypdf._page.PageObject>`.
+     |      This property allows to get a page or a range of pages.
+     |
+     |      Note:
+     |          For PdfWriter only: Provides the capability to remove a page/range of
+     |          page from the list (using the del operator). Remember: Only the page
+     |          entry is removed, as the objects beneath can be used elsewhere. A
+     |          solution to completely remove them - if they are not used anywhere - is
+     |          to write to a buffer/temporary file and then load it into a new
+     |          PdfWriter.
+     |
+     |  user_access_permissions
+     |      Get the user access permissions for encrypted documents.
+     |      Returns None if not encrypted.
+     |
+     |      .. warning::
+     |
+     |          For AES-256 encrypted documents (R=5/R=6), the returned
+     |          permissions are derived from the ``/P`` field, which is
+     |          only trustworthy if the ``/Perms`` integrity check passed.
+     |          Check :attr:`are_permissions_valid` to verify.
+     |
+     |  viewer_preferences
+     |      Returns the existing ViewerPreferences as an overloaded dictionary.
+     |
+     |  xfa
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from pypdf._doc_common.PdfDocCommon:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  __weakref__
+     |      list of weak references to the object
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from pypdf._doc_common.PdfDocCommon:
+     |
+     |  flattened_pages = None
+     |
+     |  strict = False
+
+    class Transformation(builtins.object)
+     |  Transformation(ctm: CompressedTransformationMatrix = (1, 0, 0, 1, 0, 0)) -> None
+     |
+     |  Represent a 2D transformation.
+     |
+     |  The transformation between two coordinate systems is represented by a 3-by-3
+     |  transformation matrix with the following form::
+     |
+     |      a b 0
+     |      c d 0
+     |      e f 1
+     |
+     |  Because a transformation matrix has only six elements that can be changed,
+     |  it is usually specified in PDF as the six-element array [ a b c d e f ].
+     |
+     |  Coordinate transformations are expressed as matrix multiplications::
+     |
+     |                               a b 0
+     |   [ x′ y′ 1 ] = [ x y 1 ] ×   c d 0
+     |                               e f 1
+     |
+     |
+     |  Example:
+     |      >>> from pypdf import PdfWriter, Transformation
+     |      >>> page = PdfWriter().add_blank_page(800, 600)
+     |      >>> op = Transformation().scale(sx=2, sy=3).translate(tx=10, ty=20)
+     |      >>> page.add_transformation(op)
+     |
+     |  Methods defined here:
+     |
+     |  __init__(self, ctm: CompressedTransformationMatrix = (1, 0, 0, 1, 0, 0)) -> None
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  __repr__(self) -> str
+     |      Return repr(self).
+     |
+     |  apply_on(
+     |      self,
+     |      pt: Union[tuple[float, float], list[float]],
+     |      as_object: bool = False
+     |  ) -> Union[tuple[float, float], list[float]]
+     |      Apply the transformation matrix on the given point.
+     |
+     |      Args:
+     |          pt: A tuple or list representing the point in the form (x, y).
+     |          as_object: If True, return items as FloatObject, otherwise as plain floats.
+     |
+     |      Returns:
+     |          A tuple or list representing the transformed point in the form (x', y')
+     |
+     |  rotate(self, rotation: float) -> Transformation
+     |      Rotate the contents of a page.
+     |
+     |      Args:
+     |          rotation: The angle of rotation in degrees.
+     |
+     |      Returns:
+     |          A new ``Transformation`` instance with the rotated matrix.
+     |
+     |  scale(self, sx: Optional[float] = None, sy: Optional[float] = None) -> Transformation
+     |      Scale the contents of a page towards the origin of the coordinate system.
+     |
+     |      Typically, that is the lower-left corner of the page. That can be
+     |      changed by translating the contents / the page boxes.
+     |
+     |      Args:
+     |          sx: The scale factor along the x-axis.
+     |          sy: The scale factor along the y-axis.
+     |
+     |      Returns:
+     |          A new Transformation instance with the scaled matrix.
+     |
+     |  transform(self, m: Transformation) -> Transformation
+     |      Apply one transformation to another.
+     |
+     |      Args:
+     |          m: a Transformation to apply.
+     |
+     |      Returns:
+     |          A new ``Transformation`` instance
+     |
+     |      Example:
+     |          >>> from pypdf import PdfWriter, Transformation
+     |          >>> height, width = 40, 50
+     |          >>> page = PdfWriter().add_blank_page(800, 600)
+     |          >>> op = Transformation((1, 0, 0, -1, 0, height)) # vertical mirror
+     |          >>> op = Transformation().transform(Transformation((-1, 0, 0, 1, width, 0)))  # horizontal mirror
+     |          >>> page.add_transformation(op)
+     |
+     |  translate(self, tx: float = 0, ty: float = 0) -> Transformation
+     |      Translate the contents of a page.
+     |
+     |      Args:
+     |          tx: The translation along the x-axis.
+     |          ty: The translation along the y-axis.
+     |
+     |      Returns:
+     |          A new ``Transformation`` instance
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods defined here:
+     |
+     |  compress(matrix: TransformationMatrixType) -> CompressedTransformationMatrix
+     |      Compresses the transformation matrix into a tuple of (a, b, c, d, e, f).
+     |
+     |      Args:
+     |          matrix: The transformation matrix as a tuple of tuples.
+     |
+     |      Returns:
+     |          A tuple representing the transformation matrix as (a, b, c, d, e, f)
+     |
+     |  ----------------------------------------------------------------------
+     |  Readonly properties defined here:
+     |
+     |  matrix
+     |      Return the transformation matrix as a tuple of tuples in the form:
+     |
+     |      ((a, b, 0), (c, d, 0), (e, f, 1))
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  __weakref__
+     |      list of weak references to the object
+
+FUNCTIONS
+    mult(m: list[float], n: list[float]) -> list[float]
+
+    parse_filename_page_ranges(args: list[Union[str, PageRange, None]]) -> list[tuple[str, PageRange]]
+        Given a list of filenames and page ranges, return a list of (filename, page_range) pairs.
+
+        Args:
+            args: A list where the first element is a filename. The other elements are
+                filenames, page-range expressions, slice objects, or PageRange objects.
+                A filename not followed by a page range indicates all pages of the file.
+
+        Returns:
+            A list of (filename, page_range) pairs.
+
+DATA
+    __all__ = ['DocumentInformation', 'ImageType', 'ObjectDeletionFlag', '...
+    _debug_versions = "pypdf==6.13.3, crypt_provider=('cryptography', '48....
+
+VERSION
+    6.13.3
+
+FILE
+    /home/bachir/.local/lib/python3.14/site-packages/pypdf/__init__.py
+
+
